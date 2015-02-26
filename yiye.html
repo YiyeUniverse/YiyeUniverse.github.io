@@ -3,20 +3,18 @@
     <head>
         <meta charset="utf-8">
         <title>The Yiye Universe</title>
+
         <style>
             html, body {
                 width: 100%;
                 height: 100%;
             }
-			@font-face {
-    font-family: myBodyFont;
-    src: url(css/fonts/roboto-light.ttf);
-}
+
             body {
                 background-color: #ffffff;
                 margin: 0;
                 overflow: hidden;
-                font-family: myBodyFont;
+                font-family: Roboto, Times New Roman;
 				-webkit-touch-callout: none;
 				-webkit-user-select: none;
 				-khtml-user-select: none;
@@ -72,12 +70,13 @@
         </style>
     </head>
     <body>
+		
         <script src="js/libs/three.js"></script>
         <script src="js/build/cannon.js"></script>
 		<script src="js/build/cannon.demo.js"></script>
         <script src="js/controls/PointerLockControls.js"></script>
 		<script src="js/libs/stats.min.js"></script>
-		<script src="js/THREEx/THREEx.screenshot.js"></script>
+		
 
         <div id="blocker">
 
@@ -86,7 +85,7 @@
 				<span style="font-size:20px">GAME PAUSED</span> <br />
                 <span style="font-size:40px">CLICK TO PLAY</span>
                 <br />
-                W,A,S,D = Move <br /> SPACE = Jump <br /> MOUSE = Look <br /> CLICK = Shoot <br /> P = Take Screenshot <span style="color: red"> (buggy) </span> <br />  ESC = Exit Full Screen 
+                W,A,S,D = Move <br /> SPACE = Jump <br /> MOUSE = Look <br /> CLICK = Shoot  <br />  ESC = Exit Full Screen 
             </div>
 
         </div>
@@ -265,7 +264,7 @@ var matrix = [];
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
                //cliffposition 
-				sphereBody.position.set(0,20,-0);
+				sphereBody.position.set(0,83,-104);
 				//cityposition 
 				//sphereBody.position.set(0,500,-3400);
                 sphereBody.linearDamping = 0.99;
@@ -401,7 +400,7 @@ scene.add( lightd );
 
                 document.body.appendChild( renderer.domElement );
 				
-THREEx.Screenshot.bindKey(renderer);
+
 
                 window.addEventListener( 'resize', onWindowResize, false );
 
@@ -466,7 +465,7 @@ THREEx.Screenshot.bindKey(renderer);
 			
 	
 			// SKY?
-	/*	
+	
 var path = "tex/sunnysky/";
                 var format = '.jpg';
                 var urls = [
@@ -493,7 +492,7 @@ var path = "tex/sunnysky/";
                 // The box dimension size doesn't matter that much when the mainCamera is in the centre.  Experiment with the values.
                 skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
                 scene.add(skyboxMesh);
-		*/		
+			
 		
 	/*	var geometry = new THREE.SphereGeometry( 5000, 32, 32 );
 		var SkyTexture = THREE.ImageUtils.loadTexture( "tex/sky.jpg" );
@@ -508,7 +507,7 @@ var collisionmaterial2 = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe
 var geometry = new THREE.PlaneGeometry( 500, 500, 32 );
 			var grasstex = new THREE.ImageUtils.loadTexture("tex/grasstex2.jpg"); 
 										grasstex.wrapS = grasstex.wrapT = THREE.RepeatWrapping; 
-	grasstex.repeat.set( 100, 100 );
+	grasstex.repeat.set( 50, 50 );
 var materialmap = new THREE.MeshLambertMaterial( {side: THREE.DoubleSide, map:new THREE.ImageUtils.loadTexture("tex/map.jpg")} );
 var materialgrass = new THREE.MeshLambertMaterial( {side: THREE.DoubleSide, map:grasstex} );
 var plane = new THREE.Mesh( geometry, materialgrass );
@@ -517,7 +516,52 @@ plane.rotation.x = - 90 * ( Math.PI / 180 );
 plane.position.set(0,0.01,0);
 plane.receiveShadow = true;
 
-
+var loader = new THREE.ObjectLoader();	
+				var basetex = THREE.ImageUtils.loadTexture( "tex/rockbase.jpg" );
+				basetex.wrapS = basetex.wrapT = THREE.RepeatWrapping; 
+	basetex.repeat.set( 5, 5 );
+				loader.load("models/librarybase.js", 
+					function ( obj ) {
+					obj.material.map = basetex;
+					//obj.material.emmissive = 0xcccccc;
+					obj.material.shininess = 0.4;
+					//obj.geometry.mergeVertices();
+					//obj.geometry.computeVertexNormals();
+					
+					scene.add( obj );
+					obj.rotation.y = 180 * ( Math.PI / 180 );
+					//obj.scale.set(2.145,2,2.145,2.145);
+					//var basescale = 2.68125;
+					obj.scale.set( 5, 5.5, 5 );
+					obj.position.set(0,80,-200);
+					obj.castShadow = true;
+					obj.receiveShadow = true;
+					}   
+				);
+ var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/cobbles.jpg' );
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set( 4, 12);
+var patramaterial = new THREE.MeshLambertMaterial({
+        map: floorTexture,
+      });
+ var halfExtents = new CANNON.Vec3(12,1,36);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 0;
+                    var y = 80;
+                    var z = -100;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
             function onWindowResize() {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
@@ -552,7 +596,7 @@ plane.receiveShadow = true;
             }
 
             var ballShape = new CANNON.Sphere(0.2);
-            var ballGeometry = new THREE.SphereGeometry(ballShape.radius, 32, 32);
+            var ballGeometry = new THREE.SphereGeometry(0.12, 32, 32);
 	
             var shootDirection = new THREE.Vector3();
             var shootVelo = 80;
