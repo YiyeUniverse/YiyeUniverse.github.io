@@ -74,7 +74,7 @@
         <script src="js/libs/three.js"></script>
         <script src="js/build/cannon.js"></script>
 		<script src="js/build/cannon.demo.js"></script>
-		<script src="js/CannonDebugRenderer.js"></script>
+
         <script src="js/controls/PointerLockControls.js"></script>
 		<script src="js/libs/stats.min.js"></script>
 		
@@ -350,7 +350,7 @@ var matrix = [];
 
 				camera.add(camgroup);
                 scene = new THREE.Scene();
-				var cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
+				
               //  scene.fog = new THREE.Fog( 0xffffff, 0, 500 );
 var lightd = new THREE.PointLight( 0xffffff, 1 );
 lightd.position.set( 50, 50, 50 );
@@ -593,7 +593,7 @@ var patramaterial = new THREE.MeshLambertMaterial({
                 }
 
                 controls.update( Date.now() - time );
-				cannonDebugRenderer.update(); 
+				
                 renderer.render( scene, camera );
                 time = Date.now();
 
