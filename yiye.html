@@ -383,17 +383,8 @@ scene.add( lightd );
                 controls = new PointerLockControls( camera , sphereBody );
                 scene.add( controls.getObject() );
 
-                // floor
-                geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
-                geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
-                material = new THREE.MeshBasicMaterial( { color:0xffffff } );
-
-                mesh = new THREE.Mesh( geometry, material );
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                scene.add( mesh );
-
+				material = new THREE.MeshBasicMaterial( { color:0xffffff } );
                 renderer = new THREE.WebGLRenderer({alpha: true});
 				renderer.setClearColor(0xffffff, 0);
                 renderer.shadowMapEnabled = true;
@@ -493,9 +484,9 @@ var path = "tex/sunnysky/";
                 });
 
                 // The box dimension size doesn't matter that much when the mainCamera is in the centre.  Experiment with the values.
-                skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
+                skyboxMesh = new THREE.Mesh(new THREE.BoxGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
                 scene.add(skyboxMesh);
-			
+	
 		
 	/*	var geometry = new THREE.SphereGeometry( 5000, 32, 32 );
 		var SkyTexture = THREE.ImageUtils.loadTexture( "tex/sky.jpg" );
@@ -598,7 +589,73 @@ var patramaterial = new THREE.MeshLambertMaterial({
                 time = Date.now();
 
             }
+//TERRAIN
+	//TERRAIN (THIS FECKING WORKS HOLY SHET!)
+	var matrix = [];
+            var sizeX = 64,
+                sizeY = 64;
 
+            for (var i = 0; i < sizeX; i++) {
+                matrix.push([]);
+                for (var j = 0; j < sizeY; j++) {
+                    var height = Math.cos(i / sizeX * Math.PI * 5) * Math.cos(j/sizeY * Math.PI * 5) * 2 + 2;
+                    if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
+                        height = 20;
+						//height = 3;
+                    matrix[i].push(height);
+                }
+            }
+
+            var hfShape = new CANNON.Heightfield(matrix, {
+                elementSize: 100 / sizeX
+            });
+			
+            var hfBody = new CANNON.Body({ mass: 0 });
+            hfBody.addShape(hfShape);
+			
+           // hfBody.position.set(-sizeX * hfShape.elementSize / 2, -sizeY * hfShape.elementSize / 2, -1);
+		   hfBody.position.set(0,0,0);
+		   hfBody.position.set(0, 4.1, 0);
+		   var rot = new CANNON.Vec3(1,0,0)
+    hfBody.quaternion.setFromAxisAngle(rot,(Math.PI/2))
+            world.add(hfBody);
+			
+var geometry = new THREE.Geometry();
+
+            var v0 = new CANNON.Vec3();
+            var v1 = new CANNON.Vec3();
+            var v2 = new CANNON.Vec3();
+            for (var xi = 0; xi < hfShape.data.length - 1; xi++) {
+                for (var yi = 0; yi < hfShape.data[xi].length - 1; yi++) {
+                    for (var k = 0; k < 2; k++) {
+                        hfShape.getConvexTrianglePillar(xi, yi, k===0);
+                        v0.copy(hfShape.pillarConvex.vertices[0]);
+                        v1.copy(hfShape.pillarConvex.vertices[1]);
+                        v2.copy(hfShape.pillarConvex.vertices[2]);
+                        v0.vadd(hfShape.pillarOffset, v0);
+                        v1.vadd(hfShape.pillarOffset, v1);
+                        v2.vadd(hfShape.pillarOffset, v2);
+                        geometry.vertices.push(
+                            new THREE.Vector3(v0.x, v0.y, v0.z),
+                            new THREE.Vector3(v1.x, v1.y, v1.z),
+                            new THREE.Vector3(v2.x, v2.y, v2.z)
+                        );
+                        var i = geometry.vertices.length - 3;
+                        geometry.faces.push(new THREE.Face3(i, i+1, i+2));
+                    }
+                }
+            }
+            geometry.computeBoundingSphere();
+            geometry.computeFaceNormals();
+            terrainmesh = new THREE.Mesh(geometry, collisionmaterial2);
+			scene.add(terrainmesh);
+					   var rot = new CANNON.Vec3(1,0,0)
+    terrainmesh.quaternion.setFromAxisAngle(rot,(Math.PI/2));
+	terrainmesh.position.set(0, 4.1, 0);
+	
+			//terrainmesh.scale.set(2,2,2);
+			
+			
             var ballShape = new CANNON.Sphere(0.2);
             var ballGeometry = new THREE.SphereGeometry(0.12, 32, 32);
 	
