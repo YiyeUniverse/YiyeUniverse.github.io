@@ -209,30 +209,36 @@
 
                 var solver = new CANNON.GSSolver();
 
-                world.defaultContactMaterial.contactEquationStiffness = 1e9;
-                world.defaultContactMaterial.contactEquationRegularizationTime = 4;
+                world.defaultContactMaterial.contactEquationStiffness = 2e6;
+                world.defaultContactMaterial.contactEquationRegularizationTime = 3;
 
-                solver.iterations = 7;
-                solver.tolerance = 0.1;
+                solver.iterations = 10;
+                solver.tolerance = 0.0001;
                 var split = true;
                 if(split)
                     world.solver = new CANNON.SplitSolver(solver);
                 else
                     world.solver = solver;
 
-                world.gravity.set(0,-20,0);
+					
+                world.gravity.set(0,-30,0);
                 world.broadphase = new CANNON.NaiveBroadphase();
 
                 // Create a slippery material (friction coefficient = 0.0)
-                physicsMaterial = new CANNON.Material("slipperyMaterial");
+                physicsMaterial = new CANNON.Material();
                 var physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial,
                                                                         physicsMaterial,
                                                                         0.0, // friction coefficient
-                                                                        0.3  // restitution
+                                                                        0.4  // restitution
                                                                         );
                 // We must add the contact materials to the world
+				world.defaultContactMaterial.friction = 0.2;
                 world.addContactMaterial(physicsContactMaterial);
 
+				
+				//Ground material
+
+				// var groundMaterial = new CANNON.Material("groundMaterial");
 				//CANNON Heightmap
 /*
 var matrix = [];
@@ -261,7 +267,7 @@ var matrix = [];
 
 */
                 // Create a sphere-THIS IS THE PLAYER
-                var mass = 10, radius = 1.8;
+                var mass = 160, radius = 1.8;
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
@@ -269,7 +275,7 @@ var matrix = [];
 				sphereBody.position.set(0,83,-104);
 				//cityposition 
 				//sphereBody.position.set(0,500,-3400);
-                sphereBody.linearDamping = 0.99;
+                sphereBody.linearDamping = 0.992;
                 world.add(sphereBody);
 
                 // Create a plane
@@ -283,6 +289,7 @@ var matrix = [];
             function init() {
 
                 camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 100000 );
+
 				camgroup = new THREE.Object3D();
 				
 				var loader = new THREE.ObjectLoader();	
@@ -381,6 +388,7 @@ scene.add( lightd );
 
 
                 controls = new PointerLockControls( camera , sphereBody );
+				//controls = new PointerLockControls( camera );
                 scene.add( controls.getObject() );
 
 
@@ -495,13 +503,13 @@ var sphere = new THREE.Mesh( geometry, material );
 scene.add( sphere );*/
 			
 var collisionmaterial = new THREE.MeshBasicMaterial({transparent: true, opacity: 0});
-var collisionmaterial2 = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
-		
+var collisionmaterial2 = new THREE.MeshLambertMaterial({color: 0xff0000, wireframe: true});
+//var collisionmaterial2 = new THREE.MeshBasicMaterial({color: 0xff0000,  side: THREE.DoubleSide});		
 //Map
 var geometry = new THREE.PlaneGeometry( 500, 500, 32 );
 			var grasstex = new THREE.ImageUtils.loadTexture("tex/grasstex2.jpg"); 
 										grasstex.wrapS = grasstex.wrapT = THREE.RepeatWrapping; 
-	grasstex.repeat.set( 50, 50 );
+	grasstex.repeat.set( 64, 64 );
 var materialmap = new THREE.MeshLambertMaterial( {side: THREE.DoubleSide, map:new THREE.ImageUtils.loadTexture("tex/map.jpg")} );
 var materialgrass = new THREE.MeshLambertMaterial( {side: THREE.DoubleSide, map:grasstex} );
 var plane = new THREE.Mesh( geometry, materialgrass );
@@ -534,7 +542,7 @@ var loader = new THREE.ObjectLoader();
 				);
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/cobbles.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 4, 12);
+	floorTexture.repeat.set( 5, 15);
 var patramaterial = new THREE.MeshLambertMaterial({
         map: floorTexture,
       });
@@ -591,31 +599,32 @@ var patramaterial = new THREE.MeshLambertMaterial({
             }
 //TERRAIN
 	//TERRAIN (THIS FECKING WORKS HOLY SHET!)
+	/*
 	var matrix = [];
-            var sizeX = 64,
-                sizeY = 64;
+            var sizeX = 128,
+                sizeY = 128;
 
-            for (var i = 0; i < sizeX; i++) {
+for (var i = 0; i < sizeX; i++) {
                 matrix.push([]);
                 for (var j = 0; j < sizeY; j++) {
                     var height = Math.cos(i / sizeX * Math.PI * 5) * Math.cos(j/sizeY * Math.PI * 5) * 2 + 2;
                     if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
-                        height = 20;
-						//height = 3;
+                        height = 3;
                     matrix[i].push(height);
                 }
             }
 
             var hfShape = new CANNON.Heightfield(matrix, {
-                elementSize: 100 / sizeX
+                elementSize: 200 / sizeX
             });
 			
-            var hfBody = new CANNON.Body({ mass: 0 });
+            var hfBody = new CANNON.Body({ mass: 0});
             hfBody.addShape(hfShape);
 			
            // hfBody.position.set(-sizeX * hfShape.elementSize / 2, -sizeY * hfShape.elementSize / 2, -1);
 		   hfBody.position.set(0,0,0);
-		   hfBody.position.set(0, 4.1, 0);
+		   //hfBody.position.set(0, 4.1, 0);
+		   hfBody.position.set(-sizeX * hfShape.elementSize / 2, 74.1, -100);
 		   var rot = new CANNON.Vec3(1,0,0)
     hfBody.quaternion.setFromAxisAngle(rot,(Math.PI/2))
             world.add(hfBody);
@@ -647,14 +656,16 @@ var geometry = new THREE.Geometry();
             }
             geometry.computeBoundingSphere();
             geometry.computeFaceNormals();
-            terrainmesh = new THREE.Mesh(geometry, collisionmaterial2);
+			geometry.mergeVertices();
+			geometry.computeVertexNormals();
+            terrainmesh = new THREE.Mesh(geometry,collisionmaterial2);
 			scene.add(terrainmesh);
 					   var rot = new CANNON.Vec3(1,0,0)
     terrainmesh.quaternion.setFromAxisAngle(rot,(Math.PI/2));
-	terrainmesh.position.set(0, 4.1, 0);
+	terrainmesh.position.set(-sizeX * hfShape.elementSize / 2, 74.1, -100);
 	
 			//terrainmesh.scale.set(2,2,2);
-			
+			*/
 			
             var ballShape = new CANNON.Sphere(0.2);
             var ballGeometry = new THREE.SphereGeometry(0.12, 32, 32);
