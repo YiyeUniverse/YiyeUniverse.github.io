@@ -671,6 +671,7 @@ var loader = new THREE.ObjectLoader();
 					obj.material.shininess = 0.4;
 					//obj.geometry.mergeVertices();
 					obj.geometry.computeVertexNormals();
+					obj.material.side = THREE.DoubleSide;
 					
 					librarygroup.add( obj );
 					obj.rotation.y = -90 * ( Math.PI / 180 );

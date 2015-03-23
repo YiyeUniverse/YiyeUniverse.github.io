@@ -17,19 +17,17 @@
 		}],
 	"materials": [
 		{
-			"uuid": "33630EFB-8112-440F-B50B-DDA655DCFD84",
-			"type": "MeshPhongMaterial",
+			"uuid": "D1B2D60E-CFE5-47A7-89A1-56224C95F8FE",
+			"type": "MeshLambertMaterial",
 			"color": 16777215,
-			"emissive": 0,
-			"specular": 1118481,
-			"shininess": 30
+			"emissive": 0
 		}],
 	"object": {
 		"uuid": "42C25BF8-C2EE-4744-9DC3-25A0E380E914",
 		"type": "Mesh",
 		"name": "Cylinder.001",
 		"geometry": "FAB50DDE-CD49-49E0-8E92-D45228DBC651",
-		"material": "33630EFB-8112-440F-B50B-DDA655DCFD84",
+		"material": "D1B2D60E-CFE5-47A7-89A1-56224C95F8FE",
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
 	}
 }
