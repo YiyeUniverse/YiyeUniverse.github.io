@@ -673,22 +673,25 @@ var loader = new THREE.ObjectLoader();
 					obj.geometry.computeVertexNormals();
 					obj.material.side = THREE.DoubleSide;
 					
-					librarygroup.add( obj );
+					scene.add( obj );
 					obj.rotation.y = -90 * ( Math.PI / 180 );
 					//obj.scale.set(2.145,2,2.145,2.145);
 					//var basescale = 2.68125;
 					obj.scale.set( 11.15, 11.15, 11.15 );
 					obj.castShadow = true;
 					obj.receiveShadow = true;
+					obj.position.set(0,81,-200);
 					}   
 				);
 				var liblight = new THREE.PointLight( 0xffffff, 1, 100 );
 liblight.position.set( 0, 85, -200 );
 scene.add( liblight );
+
 					var libwalltex = THREE.ImageUtils.loadTexture( "tex/libbrick.jpg" );
 				libwalltex.wrapS = libwalltex.wrapT = THREE.RepeatWrapping; 
 	libwalltex.repeat.set( 15.8, 3);
 	libwalltex.offset.y = 0.5;
+	
 				loader.load("models/libextbase.json", 
 					function ( obj ) {
 					obj.material.map = libwalltex;
