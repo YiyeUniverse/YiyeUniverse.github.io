@@ -1,0 +1,40 @@
+body {
+    background-color: #000000;
+	margin: 0;
+}
+p {
+    font-family: "Trebuchet MS", Arial, sans-serif;
+	font-size: 14;
+	margin: 0;
+    padding: 0;
+}
+h1 {
+	font-family: "Trebuchet MS", Arial, serif;
+	font-size: 34;
+    color: #000000;
+	margin: 0;
+    padding: 0;
+}
+
+.header{
+    width:100%;
+    background-image: url("images/bg.jpg");
+	background-position: center;
+	background-size: cover;
+    margin: auto;
+	position: relative;
+	text-align: center;
+}
+.bar{
+width:100%;
+background-color: rgba(0,0,256,0.2);
+margin: auto;
+padding: 4px;
+position: relative;
+}
+.content {
+    width:80%;
+    background: #ffffff;
+    margin: auto;
+	position: relative;
+}
