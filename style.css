@@ -38,3 +38,8 @@ position: relative;
     margin: auto;
 	position: relative;
 }
+li.tumblr_post { margin-bottom: 00px; border: none; padding: 0px 0px;  list-style: none; overflow: none; font-family:Arial; }
+img.tumblr_photo { padding-top: 0px; }
+li.tumblr_link_post, li.tumblr_video_post { padding: 0px; }
+div.tumblr_body p b { width: auto; border: 0px solid #999; margin-left: 0px; margin-right: 0px; padding: 0px;  align: auto; }
+div.tumblr_title { font-family: Trebuchet MS; font-size: 200%; text-decoration: underline; }

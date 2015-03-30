@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+	<link rel="icon" 
+      href="images/favicon.ico">
         <meta charset="utf-8">
         <title>The Yiye Universe</title>
         <style>
@@ -279,7 +281,7 @@ document.body.appendChild( stats.domElement );
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
-                sphereBody.position.set(0,66,0);
+                sphereBody.position.set(0,66,-44);
                 sphereBody.linearDamping = 0.999;
                 world.add(sphereBody);
 
@@ -294,7 +296,7 @@ document.body.appendChild( stats.domElement );
             function init() {
 
                 camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 50000 );
-				sphereBody.position.set(0,66,0);
+				//sphereBody.position.set(0,66,0);
 				var camlight = new THREE.PointLight(0xFFFFFF, 0.5, 1 );
 					camera.add(camlight);
 
@@ -338,7 +340,7 @@ document.body.appendChild( stats.domElement );
                 geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
 
                 material = new THREE.MeshPhongMaterial( { color: 0xdddddd} );
-				spellmaterial = new THREE.MeshBasicMaterial( { color: 0xFF9500, map: new THREE.ImageUtils.loadTexture("tex/spelltex.jpg")} );
+				spellmaterial = new THREE.MeshBasicMaterial( { color:0xffffff } );
 
                 mesh = new THREE.Mesh( geometry, material );
                 mesh.castShadow = true;
@@ -594,27 +596,6 @@ var patramaterial = new THREE.MeshPhongMaterial({
                     boxMesh.receiveShadow = true;
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
-//Trees
-var bark = new THREE.ImageUtils.loadTexture("tex/bark2.jpg"); 
-bark.wrapS = bark.wrapT = THREE.RepeatWrapping; 
-	bark.repeat.set( 6, 12 );
-
-var loader = new THREE.ObjectLoader();	
-loader.load("models/twistedtree.js", 
-    function ( obj ) {
-	obj.material.map = bark;
-	obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(0,65,8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
 
 
 var ferntex = new THREE.ImageUtils.loadTexture("tex/fern.png"); 
@@ -884,9 +865,9 @@ var fencematerial = new THREE.MeshPhongMaterial({
                     boxMeshes.push(boxMesh);
 					
  //SideWall
- var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/paints/brickypaint.jpg' );
+ var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/brickunder.jpg' );
 	fenceTexture.wrapS = fenceTexture.wrapT = THREE.RepeatWrapping; 
-	fenceTexture.repeat.set( 24, 1 );
+	fenceTexture.repeat.set( 48, 2 );
 var fencematerial = new THREE.MeshPhongMaterial({
         map: fenceTexture,
 		color: 0x000000,
@@ -2299,8 +2280,8 @@ balllight.position.set(13,66,-18.4);
 var libext = new THREE.ImageUtils.loadTexture("tex/libbrick.jpg")     
 libext.wrapS	= THREE.RepeatWrapping;
 	libext.wrapT	= THREE.RepeatWrapping;
-	libext.repeat.x= 200
-	libext.repeat.y= 200
+	libext.repeat.x= 40
+	libext.repeat.y= 700
 var libextmaterial = new THREE.MeshPhongMaterial({
         map: libTexture,
 		bumpMap: libbumpTexture,
@@ -2308,7 +2289,7 @@ var libextmaterial = new THREE.MeshPhongMaterial({
       });	
 	  //was 24
 var loader = new THREE.ObjectLoader();	
-loader.load("models/library.js", 
+loader.load("models/libraryext.json", 
     function ( obj ) {
 	obj.material.map = libext;
 	obj.material.bumpMap = libext;
@@ -2318,9 +2299,10 @@ loader.load("models/library.js",
 	obj.material.shading = THREE.SmoothShading;
 	obj.material.side = THREE.FrontSide;
        scene.add( obj );
+	   obj.rotation.y = -90 * ( Math.PI / 180 );
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   //var basescale = 2.68125;
-	   obj.scale.set( 1, 1, 1 );
+	   obj.scale.set( 5, 5, 5 );
 	   obj.position.set(0,65,-90);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
@@ -2329,23 +2311,23 @@ loader.load("models/library.js",
 
 //Library Interior
 
- 	var libint = new THREE.ImageUtils.loadTexture("tex/Bookshelves.jpg")     
+ 	var libint = new THREE.ImageUtils.loadTexture("tex/books.jpg")     
 libint.wrapS	= THREE.RepeatWrapping;
 	libint.wrapT	= THREE.RepeatWrapping;
-	libint.repeat.x= 800
-	libint.repeat.y= 800
+	libint.repeat.x= 200
+	libint.repeat.y= 3500
+	libint.offset.y = -0.3;
 var loader = new THREE.ObjectLoader();	
-loader.load("models/library.js", 
+loader.load("models/libraryint.json", 
     function ( obj ) {
 	obj.material.map = libint;
-	obj.material.bumpMap = libint;
-	obj.material.bumpScale = 0.05;
 	//obj.material.emmissive = 0xcccccc;
 	obj.material.shininess = 1.4;
 	obj.material.shading = THREE.SmoothShading;
-	obj.material.side = THREE.BackSide;
+	obj.material.side = THREE.FrontSide;
        scene.add( obj );
-	   obj.scale.set(1, 1, 1);
+	   obj.rotation.y = -90 * ( Math.PI / 180 );
+	   obj.scale.set(5, 5, 5);
 	   //var basescale = 2.68125;
 	  // obj.scale.set( 1, 1, 1 );
 	   obj.position.set(0,65,-90);
@@ -2353,6 +2335,32 @@ loader.load("models/library.js",
 	 obj.receiveShadow = true;
     }   
 );	  
+var loader = new THREE.ObjectLoader();	
+				var libfloortex = THREE.ImageUtils.loadTexture( "tex/gratingfloor2.png" );
+				libfloortex.wrapS = libfloortex.wrapT = THREE.RepeatWrapping; 
+	libfloortex.repeat.set( 160, 160 );
+
+var loader = new THREE.ObjectLoader();	
+loader.load("models/libraryfloor.json", 
+    function ( obj ) {
+	obj.material.map = libfloortex;
+	obj.material.shininess = 0.4;
+       //scene.add( obj );
+	   obj.rotation.y = - 90 * ( Math.PI / 180 );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   //var basescale = 2.68125;
+scene.add(obj);
+	   obj.scale.set( 5, 5, 5 );
+	  obj.position.set(0,65,-90);
+	  var newobj = obj.clone();
+	  newobj.position.set(0,72,-90);
+	  scene.add(newobj);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
+
+
 //Inner Light
  lightlib = new THREE.SpotLight( 0x8CFAFA,1.5 );
                  lightlib.position.set( 0, 89, -90 );
@@ -2367,16 +2375,18 @@ var tankMaterial = new THREE.MeshLambertMaterial( {color: 0x000022, envMap:tcube
         reflectivity: 0.25} );
 var tank = new THREE.Mesh( geometry, tankMaterial );
 scene.add( tank );
-tank.position.set(0,65,0);
+tank.position.set(0,75,-90);
 
 //Library Door
- 	var libdoor = new THREE.ImageUtils.loadTexture("tex/libdoor2.jpg"); 
+ 	var libdoor = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg"); 
+		libdoor.wrapS = libdoor.wrapT = THREE.RepeatWrapping; 
+	libdoor.repeat.set( 8, 8 );
 var loader = new THREE.ObjectLoader();	
-loader.load("models/libdoor.js", 
+loader.load("models/librarydoor.json", 
     function ( obj ) {
 	obj.material.map = libdoor;
-	//obj.material.bumpMap = libext;
-	//obj.material.bumpScale = 0.05;
+	obj.material.bumpMap = libdoor;
+	obj.material.bumpScale = 0.05;
 	//obj.material.emmissive = 0xcccccc;
 	obj.material.shininess = 0.4;
 	obj.material.shading = THREE.SmoothShading;
@@ -2384,8 +2394,9 @@ loader.load("models/libdoor.js",
        scene.add( obj );
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   //var basescale = 2.68125;
-	   obj.scale.set( 1.2, 1.2, 0.9 );
-	   obj.position.set(0,65,-87);
+	   obj.scale.set( 5, 5, 5 );
+	   obj.position.set(0,65,-90);
+	   obj.rotation.y = - 90 * ( Math.PI / 180 );
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
     }   
@@ -2774,6 +2785,15 @@ var path = "tex/sunnysky/";
                     ballMesh.castShadow = false;
                     ballMesh.receiveShadow = true;
                     balls.push(ballBody);
+					var spriteMaterial = new THREE.SpriteMaterial( 
+					{ 
+						map: new THREE.ImageUtils.loadTexture( 'tex/glow.png' ), 
+						//useScreenCoordinates: false, alignment: THREE.SpriteAlignment.center,
+						color: 0xcc0000, transparent: false, blending: THREE.AdditiveBlending
+					});
+					var sprite = new THREE.Sprite( spriteMaterial );
+					sprite.scale.set(1, 1, 2.0);
+					ballMesh.add(sprite); // this centers the glow at the mesh
                     ballMeshes.push(ballMesh);
                     getShootDir(shootDirection);
                     ballBody.velocity.set(  shootDirection.x * shootVelo,
