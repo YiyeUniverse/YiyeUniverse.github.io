@@ -118,6 +118,8 @@ function checkTime(i) {
         <script src="build/cannon.js"></script>
         <script src="js/PointerLockControls.js"></script>
 		<script src="js/stats.min.js"></script>
+		<script src="js/Mirror.js"></script>
+		<script src="js/WaterShader.js"></script>
 		 
         <div id="blocker">
 
@@ -303,7 +305,7 @@ document.body.appendChild( stats.domElement );
                 scene = new THREE.Scene();
                 scene.fog = new THREE.Fog( 0xffffff, 0, 1000 );
 
-                var ambient = new THREE.AmbientLight( 0x444444 );
+                var ambient = new THREE.AmbientLight( 0x1111111 );
                 scene.add( ambient );
 
 				
@@ -355,7 +357,7 @@ scene.add( menucylinder );
 
 				//Rendering and all that jazz
                 renderer = new THREE.WebGLRenderer({antialias:false});
-				renderer.sortObjects = false
+				renderer.sortObjects = true;
                 renderer.shadowMapEnabled = true;
                 renderer.shadowMapSoft = false;
                 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -2354,6 +2356,7 @@ scene.add(obj);
 	  obj.position.set(0,65,-90);
 	  var newobj = obj.clone();
 	  newobj.position.set(0,72,-90);
+	  newobj.rotation.y = 0 * ( Math.PI / 180 );
 	  scene.add(newobj);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
@@ -2368,14 +2371,38 @@ scene.add(obj);
 scene.add(lightlib);
 
 //Tank
- 	var bookreflection = new THREE.ImageUtils.loadTexture("tex/Bookshelves.jpg")  ;
-var geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
-tcubemap = THREE.ImageUtils.loadTextureCube(bookreflection);
-var tankMaterial = new THREE.MeshLambertMaterial( {color: 0x000022, envMap:tcubemap, combine: THREE.MixOperation, 
-        reflectivity: 0.25} );
+ 	var tanktex = new THREE.ImageUtils.loadTexture("tex/glass.jpg"); 
+		tanktex.wrapS = tanktex.wrapT = THREE.RepeatWrapping; 
+	tanktex.repeat.set( 80, 160 );
+var geometry = new THREE.CylinderGeometry( 5, 5, 80, 32 );
+var tankMaterial = new THREE.MeshPhongMaterial( {color: 0x000011, map:tanktex, bumpMap: tanktex, bumpScale: 0.05, side: THREE.DoubleSide, opacity: 0.8, transparent: true} );
 var tank = new THREE.Mesh( geometry, tankMaterial );
 scene.add( tank );
-tank.position.set(0,75,-90);
+tank.position.set(0,105,-90);
+//tankbase
+ 	var tankbasetex = new THREE.ImageUtils.loadTexture("tex/wood.jpg"); 
+		tankbasetex.wrapS = tankbasetex.wrapT = THREE.RepeatWrapping; 
+	tankbasetex.repeat.set( 18, 18 );
+var loader = new THREE.ObjectLoader();	
+loader.load("models/tankbase.json", 
+    function ( obj ) {
+	obj.material.map = tankbasetex;
+	obj.material.bumpMap = tankbasetex;
+	obj.material.bumpScale = 0.05;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+	obj.material.side = THREE.FrontSide;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   //var basescale = 2.68125;
+	   obj.scale.set( 5.001, 5.001, 5.001 );
+	   obj.position.set(0,65,-90);
+	   obj.rotation.y = - 90 * ( Math.PI / 180 );
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);	  
 
 //Library Door
  	var libdoor = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg"); 
@@ -2401,6 +2428,7 @@ loader.load("models/librarydoor.json",
 	 obj.receiveShadow = true;
     }   
 );	  
+   
 //DragonWitch
 /*
  	var dragonwitch = new THREE.ImageUtils.loadTexture("tex/dragonwitchtex.jpg"); 
@@ -2505,6 +2533,24 @@ libextfloor.rotation.x= - 90 * ( Math.PI / 180 );
 libextfloor.rotation.z= - 22.5 * ( Math.PI / 180 );
 libextfloor.receiveShadow=true;
 libextfloor.castShadow=false;
+
+var libflurTexture = new THREE.ImageUtils.loadTexture( 'tex/library_tiles.jpg' );
+	libflurTexture.wrapS = libflurTexture.wrapT = THREE.RepeatWrapping; 
+	libflurTexture.repeat.set( 50, 50 );
+var libflurmaterial = new THREE.MeshPhongMaterial({
+        map: libflurTexture,
+		bumpMap: libflurTexture,
+		bumpScale: 0.025,
+      });	
+basegeometry = new THREE.CircleGeometry( 25.5, 8 );
+var libintfloor = new THREE.Mesh( basegeometry, libflurmaterial );
+scene.add(libintfloor);
+libintfloor.position.set(0,65.0025,-90);
+libintfloor.rotation.x= - 90 * ( Math.PI / 180 );
+libintfloor.rotation.z= - 22.5 * ( Math.PI / 180 );
+libintfloor.receiveShadow=true;
+libintfloor.castShadow=false;
+
 var halfExtents = new CANNON.Vec3(30,0.002,30);
                 var boxShape = new CANNON.Box(halfExtents);
                 var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
@@ -2684,7 +2730,52 @@ var path = "tex/sunnysky/";
                 skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
                 scene.add(skyboxMesh);
 				//skyboxMesh.rotation.y = -  * ( Math.PI / 180 );
-					
+//SEA
+var parameters = {
+				width: 2000,
+				height: 2000,
+				widthSegments: 250,
+				heightSegments: 250,
+				depth: 1500,
+				param: 4,
+				filterparam: 1
+			}	
+			var waterNormals;
+waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
+				waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping; 
+				water = new THREE.Water( renderer, camera, scene, {
+					textureWidth: 256, 
+					textureHeight: 256,
+					waterNormals: waterNormals,
+					alpha: 	0.86,
+					sunDirection: light.position.clone().normalize(),
+					sunColor: 0xffffff,
+					waterColor: 0x012420,
+					distortionScale: 70.0,
+				} );
+				mirrorMesh = new THREE.Mesh(
+					new THREE.PlaneGeometry( parameters.width * 1, parameters.height * 1 ),
+					water.material
+				);
+				mirrorMesh.add( water );
+				mirrorMesh.rotation.x = - Math.PI * 0.5;
+				scene.add( mirrorMesh );
+				mirrorMesh.position.set(0,35,0);
+				
+ 	var seafloortex = new THREE.ImageUtils.loadTexture("tex/seafloor.jpg"); 
+		seafloortex.wrapS = seafloortex.wrapT = THREE.RepeatWrapping; 
+	seafloortex.repeat.set( 80, 80 );
+ geometry = new THREE.PlaneGeometry( 2000, 2000, 50, 50 );
+                geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
+				seafloormaterial = new THREE.MeshBasicMaterial( { map: seafloortex} );
+                mesh = new THREE.Mesh( geometry, seafloormaterial );
+				//mesh = new THREE.Mesh( geometry, watermaterial );
+                mesh.castShadow = false;
+                mesh.receiveShadow = true;
+                scene.add( mesh );
+				mesh.position.set(0,25,0);
+				
+				
 				// Add linked boxes
                 var size = 0.5;
                 var he = new CANNON.Vec3(size,size,size*0.1);
@@ -2749,7 +2840,9 @@ var path = "tex/sunnysky/";
                 }
 
                 controls.update( Date.now() - time );
-                renderer.render( scene, camera );
+				water.material.uniforms.time.value += 1.0 / 60.0;
+				water.render();
+                renderer.render( scene, camera );			
                 time = Date.now();
 
             }
