@@ -286,6 +286,7 @@ document.body.appendChild( stats.domElement );
                 sphereBody.position.set(0,66,-44);
                 sphereBody.linearDamping = 0.999;
                 world.add(sphereBody);
+			
 
                 // Create a plane
                 var groundShape = new CANNON.Plane(10,30,10);
@@ -305,11 +306,11 @@ document.body.appendChild( stats.domElement );
                 scene = new THREE.Scene();
                 scene.fog = new THREE.Fog( 0xffffff, 0, 1000 );
 
-                var ambient = new THREE.AmbientLight( 0x1111111 );
+                var ambient = new THREE.AmbientLight( 0x222222 );
                 scene.add( ambient );
 
 				
-                light = new THREE.SpotLight( 0xFFFFF2,1.55 );
+                light = new THREE.SpotLight( 0xFFFFF2,2 );
                 light.position.set( -100, 300, 200 );
                 light.target.position.set( 0, 0, 0 );
                 if(true){
@@ -368,12 +369,14 @@ scene.add( menucylinder );
                 window.addEventListener( 'resize', onWindowResize, false );
 
               //TEST AREA NOTIFICATION
+			  /*
 			  var testgeometry = new THREE.PlaneGeometry( 20, 20, 1 );
 var testmaterial = new THREE.MeshBasicMaterial( {map: THREE.ImageUtils.loadTexture( 'tex/testarea.gif' ), transparent:true, side: THREE.DoubleSide} );
 var testplane = new THREE.Mesh( testgeometry, testmaterial );
 scene.add( testplane );
 testplane.position.set(0,20,0);
 testplane.rotation.x = -90 * Math.PI / 180;
+*/
 
 			  // Add boxes
                 var halfExtents = new CANNON.Vec3(1,1,1);
@@ -2574,24 +2577,69 @@ var halfExtents = new CANNON.Vec3(30,0.002,30);
 	var base = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
 base.wrapS	= THREE.RepeatWrapping;
 	base.wrapT	= THREE.RepeatWrapping;
-	base.repeat.x= 8
-	base.repeat.y= 8
+	base.repeat.x= 20
+	base.repeat.y= 20
 					var loader = new THREE.ObjectLoader();	
-loader.load("models/librarybase.js", 
+loader.load("models/librarybaserock.json", 
     function ( obj ) {
 	obj.material.map = base;
 	obj.material.bumpMap = base;
-	obj.material.bumpScale = 0.5;
+	obj.material.bumpScale = 0.05;
 	//obj.material.emmissive = 0xcccccc;
 	obj.material.shininess = 0.4;
 	obj.material.shading = THREE.SmoothShading;
        scene.add( obj );
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   var basescale = 2.68125;
 	   obj.scale.set( 2.68125, 2.68125, 2.68125 );
 	   obj.position.set(0,63,-90);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
+    }   
+);
+loader.load("models/patracliff.json", 
+    function ( obj ) {
+	obj.material.map = base;
+	obj.material.bumpMap = base;
+	obj.material.bumpScale = 0.05;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   var basescale = 2.68125;
+	   obj.scale.set( 2, 2.68125, 2.68125 );
+	   obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(0,65,-42);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
+	var archtex = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
+archtex.wrapS	= THREE.RepeatWrapping;
+	archtex.wrapT	= THREE.RepeatWrapping;
+	archtex.repeat.x= 5
+	archtex.repeat.y= 2
+loader.load("models/archbridge.json", 
+    function ( obj ) {
+	obj.material.map = archtex;
+	obj.material.bumpMap = archtex;
+	obj.material.bumpScale = 0.05;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   var basescale = 2.68125;
+	   obj.scale.set( 1, 1.25, 1 );
+	   //obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(0,64.25,-52);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
     }   
 );
 
@@ -2732,8 +2780,8 @@ var path = "tex/sunnysky/";
 				//skyboxMesh.rotation.y = -  * ( Math.PI / 180 );
 //SEA
 var parameters = {
-				width: 2000,
-				height: 2000,
+				width: 20000,
+				height: 20000,
 				widthSegments: 250,
 				heightSegments: 250,
 				depth: 1500,
@@ -2760,7 +2808,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
 				mirrorMesh.add( water );
 				mirrorMesh.rotation.x = - Math.PI * 0.5;
 				scene.add( mirrorMesh );
-				mirrorMesh.position.set(0,35,0);
+				mirrorMesh.position.set(0,25,0);
 				
  	var seafloortex = new THREE.ImageUtils.loadTexture("tex/seafloor.jpg"); 
 		seafloortex.wrapS = seafloortex.wrapT = THREE.RepeatWrapping; 
@@ -2773,8 +2821,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 mesh.castShadow = false;
                 mesh.receiveShadow = true;
                 scene.add( mesh );
-				mesh.position.set(0,25,0);
-				
+
 				
 				// Add linked boxes
                 var size = 0.5;
@@ -2842,6 +2889,10 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 controls.update( Date.now() - time );
 				water.material.uniforms.time.value += 1.0 / 60.0;
 				water.render();
+				//Correct player position if underwater
+					if (sphereBody.position.y < 26){
+				sphereBody.position.set(0,66,-44);
+				}
                 renderer.render( scene, camera );			
                 time = Date.now();
 
@@ -2850,7 +2901,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
             var ballShape = new CANNON.Sphere(0.1);
             var ballGeometry = new THREE.SphereGeometry(ballShape.radius, 24, 24);
             var shootDirection = new THREE.Vector3();
-            var shootVelo = 80;
+            var shootVelo = 100;
             var projector = new THREE.Projector();
             function getShootDir(targetVec){
                 var vector = targetVec;
