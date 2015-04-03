@@ -131,6 +131,8 @@ function checkTime(i) {
 			<img src="images/logolarge.png" width="100%" height="auto"><br>
                 <span style="font-size:40px">CLICK TO PLAY</span>
                 <br />
+				<audio autoplay> <source src="sounds/magic.mp3" type="audio/mpeg"> Your browser does not support the audio element. </audio>
+				<br />
                 (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK = Shoot) <br />
 			<i>	Pre-ALPHA </i> <br />
 			<br />
@@ -264,7 +266,7 @@ document.body.appendChild( stats.domElement );
                 else
                     world.solver = solver;
 
-                world.gravity.set(0,-20,0);
+                world.gravity.set(0,-30,0);
                 world.broadphase = new CANNON.NaiveBroadphase();
 
                 // Create a slippery material (friction coefficient = 0.0)
@@ -349,7 +351,7 @@ document.body.appendChild( stats.domElement );
                 mesh.castShadow = true;
                 mesh.receiveShadow = true;
                 scene.add( mesh );
-
+				
 				//Cylinder for menu
 var menugeometry = new THREE.CylinderGeometry( 0.5, 0.5, 10, 16 );
 var menumaterial = new THREE.MeshBasicMaterial( {color: 0x000000, side: THREE.BackSide} );
@@ -377,7 +379,13 @@ scene.add( testplane );
 testplane.position.set(0,20,0);
 testplane.rotation.x = -90 * Math.PI / 180;
 */
+			  var testgeometry = new THREE.PlaneGeometry( 6, 4, 1 );
+var testmaterial = new THREE.MeshBasicMaterial( {map: THREE.ImageUtils.loadTexture( 'tex/rick.png' ), transparent:true, side: THREE.DoubleSide} );
+var testplane = new THREE.Mesh( testgeometry, testmaterial );
+scene.add( testplane );
+testplane.position.set(0,68,-47);
 
+/*
 			  // Add boxes
                 var halfExtents = new CANNON.Vec3(1,1,1);
                 var boxShape = new CANNON.Box(halfExtents);
@@ -398,7 +406,7 @@ testplane.rotation.x = -90 * Math.PI / 180;
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
                 }
-
+*/
  //City Floor BOX
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -549,7 +557,6 @@ scene.add(plane);
 plane.position.set(-6.001,64,-10);
 plane.rotation.y = 	 -90 * ( Math.PI / 180 );
 plane.rotation.z = 	 24 * ( Math.PI / 180 );
-
 
 //City Floor BOX 2
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
@@ -2635,7 +2642,7 @@ loader.load("models/archbridge.json",
 	   obj.geometry.mergeVertices();
 		obj.geometry.computeVertexNormals();
 	   var basescale = 2.68125;
-	   obj.scale.set( 1, 1.25, 1 );
+	   obj.scale.set( 1, 1.4, 1 );
 	   //obj.rotation.y = -90  * ( Math.PI / 180 );
 	   obj.position.set(0,64.25,-52);
 	 obj.castShadow = true;
@@ -2775,7 +2782,7 @@ var path = "tex/sunnysky/";
                 });
 
                 // The box dimension size doesn't matter that much when the mainCamera is in the centre.  Experiment with the values.
-                skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
+                skyboxMesh = new THREE.Mesh(new THREE.BoxGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
                 scene.add(skyboxMesh);
 				//skyboxMesh.rotation.y = -  * ( Math.PI / 180 );
 //SEA
@@ -2822,8 +2829,12 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 mesh.receiveShadow = true;
                 scene.add( mesh );
 
+				var moveobject= new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), material );
+				scene.add(moveobject);
+				moveobject.position.set(0,65.5,-34);
 				
 				// Add linked boxes
+			/*	
                 var size = 0.5;
                 var he = new CANNON.Vec3(size,size,size*0.1);
                 var boxShape = new CANNON.Box(he);
@@ -2857,6 +2868,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                     }
                     last = boxbody;
                 }
+				*/
             }
 
             function onWindowResize() {
@@ -2872,27 +2884,24 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 requestAnimationFrame( animate );
                 if(controls.enabled){
                     world.step(dt);
-
                     // Update ball positions
                     for(var i=0; i<balls.length; i++){
                         ballMeshes[i].position.copy(balls[i].position);
                         ballMeshes[i].quaternion.copy(balls[i].quaternion);
-                    }
-
+                    }		
                     // Update box positions
                     for(var i=0; i<boxes.length; i++){
                         boxMeshes[i].position.copy(boxes[i].position);
                         boxMeshes[i].quaternion.copy(boxes[i].quaternion);
                     }
                 }
-
                 controls.update( Date.now() - time );
-				water.material.uniforms.time.value += 1.0 / 60.0;
+				water.material.uniforms.time.value += 0.8 / 60.0;
 				water.render();
 				//Correct player position if underwater
 					if (sphereBody.position.y < 26){
 				sphereBody.position.set(0,66,-44);
-				}
+				}	
                 renderer.render( scene, camera );			
                 time = Date.now();
 
