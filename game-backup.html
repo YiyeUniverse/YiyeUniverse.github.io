@@ -761,37 +761,6 @@ var halfExtents = new CANNON.Vec3(6,0.002,30);
                     boxMesh.receiveShadow = true;
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
-					
-//Even Lower
- var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 180, 180 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 180, 180 );
-	var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
- var halfExtents = new CANNON.Vec3(72,0.002,72);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 55;
-                    var z = 36;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
 
 					
 					 var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
@@ -2647,6 +2616,7 @@ loader.load("models/patracliff.json",
 	 obj.receiveShadow = true;
     }   
 );
+
 	var archtex = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
 archtex.wrapS	= THREE.RepeatWrapping;
 	archtex.wrapT	= THREE.RepeatWrapping;
@@ -2669,6 +2639,66 @@ loader.load("models/archbridge.json",
 	   obj.position.set(0,64.25,-52);
 	 obj.castShadow = true;
 	 obj.receiveShadow = false;
+    }   
+);
+
+	var brickbridgetex = new THREE.ImageUtils.loadTexture("tex/brick.jpg")     
+brickbridgetex.wrapS	= THREE.RepeatWrapping;
+	brickbridgetex.wrapT	= THREE.RepeatWrapping;
+	brickbridgetex.repeat.x= 20
+	brickbridgetex.repeat.y= 15
+loader.load("models/largebridge.json", 
+    function ( obj ) {
+	obj.material.map = brickbridgetex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   obj.scale.set( 2, 2, 2 );
+	   //obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(46,63,20);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+    }   
+);
+loader.load("models/largebridge.json", 
+    function ( obj ) {
+	obj.material.map = brickbridgetex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   obj.scale.set( 2, 2, 2 );
+	   //obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(86,63,20);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+    }   
+);
+	var firethingtex = new THREE.ImageUtils.loadTexture("tex/fireholdertex.png")     
+firethingtex.wrapS	= THREE.RepeatWrapping;
+	firethingtex.wrapT	= THREE.RepeatWrapping;
+	firethingtex.repeat.x= 2
+	firethingtex.repeat.y= 2
+loader.load("models/fireholderthing.json", 
+    function ( obj ) {
+	obj.material.map = firethingtex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   obj.scale.set( 1, 1, 1 );
+	   //obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(0,65,20);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+	 obj.transparent=true;
     }   
 );
 
