@@ -110,6 +110,7 @@ font-family: 'Alegreya', serif;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
   color: #FFFFFF;
+  cursor: wait;
 }
         </style>
 		
@@ -307,7 +308,7 @@ document.body.appendChild( stats.domElement );
                 world.addContactMaterial(physicsContactMaterial);
 
                 // Create a sphere THIS IS THE PLAYER
-                var mass = 8, radius = 0.825;
+                var mass = 6, radius = 0.850;
 				//var mass = 5, radius = 1.3;
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
@@ -333,28 +334,29 @@ document.body.appendChild( stats.domElement );
 					camera.add(camlight);
 
                 scene = new THREE.Scene();
-                scene.fog = new THREE.Fog( 0xffffff, 0, 1000 );
+                scene.fog = new THREE.Fog( 0xffffff, 0, 10000 );
 
                 var ambient = new THREE.AmbientLight( 0x222222 );
                 scene.add( ambient );
-
+				var collisionmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0});
 				
-                light = new THREE.SpotLight( 0xFFFFF2,2 );
+               light = new THREE.SpotLight( 0xFFFFF2,2 );
                 light.position.set( -100, 300, 200 );
                 light.target.position.set( 0, 0, 0 );
+
                 if(true){
                     light.castShadow = true;
 
                     light.shadowCameraNear = 2;
                     light.shadowCameraFar = 1000;//camera.far;
-                    light.shadowCameraFov = 40;
+                    light.shadowCameraFov = 90;
 
                     light.shadowMapBias = 0.5;
                     light.shadowMapDarkness = 0.7;
                     light.shadowMapWidth = 8*512;
                     light.shadowMapHeight = 8*512;
 
-                  //  light.shadowCameraVisible = true;
+                    light.shadowCameraVisible = true;
                 }
                 scene.add( light );
  
@@ -388,7 +390,7 @@ scene.add( menucylinder );
 				//Rendering and all that jazz
                 renderer = new THREE.WebGLRenderer({antialias:false});
 				renderer.sortObjects = true;
-                renderer.shadowMapEnabled = true;
+                renderer.shadowMapEnabled = false;
                 renderer.shadowMapSoft = false;
                 renderer.setSize( window.innerWidth, window.innerHeight );
                 renderer.setClearColor( scene.fog.color, 1 );
@@ -429,6 +431,8 @@ testplane.rotation.x = -90 * Math.PI / 180;
                     boxMeshes.push(boxMesh);
                 }
 */
+
+
  //City Floor BOX
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -649,36 +653,6 @@ loader.load("models/fern.js",
 	 obj.receiveShadow = true;
     }   
 );
-loader.load("models/tree1.js", 
-    function ( obj ) {
-	obj.material.map = bark;
-	obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.3, 0.3, 0.2 );
-	   obj.position.set(-5.7,64.5,-12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-loader.load("models/tree1.js", 
-    function ( obj ) {
-	obj.material.map = bark;
-	obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.21, 0.212, 0.21 );
-	   obj.position.set(5.8,64.8,-12.2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
 //City Floor BOX Right
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -816,56 +790,7 @@ var halfExtents = new CANNON.Vec3(6,0.002,30);
 			boxMeshes.push(cylinderMesh);
 			
 			*/
-			
 
-			
- //Fence1
- var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/ironfence2.png' );
-	fenceTexture.wrapS = fenceTexture.wrapT = THREE.RepeatWrapping; 
-	fenceTexture.repeat.set( 48, 1 );
-var fencematerial = new THREE.MeshPhongMaterial({
-        map: fenceTexture,
-		bumpMap: fenceTexture,
-		bumpScale: 0.5,
-		transparent: true
-      });
- var halfExtents = new CANNON.Vec3(0.001,0.75,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x,halfExtents.y,36);
-				var x = 6;
-                    var y = 65.375;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-//fence2 
- var halfExtents = new CANNON.Vec3(0.001,0.75,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x,halfExtents.y,36);
-				var x = -6;
-                    var y = 65.3751;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
 					
  //SideWall
  var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/brickunder.jpg' );
@@ -996,1280 +921,7 @@ var fencematerial = new THREE.MeshPhongMaterial({
             //demo.addVisual(cylinderBody2);
 		*/	
 			
- //Building
- var brickTexture1 = new THREE.ImageUtils.loadTexture( 'tex/brick5.jpg' );
-	brickTexture1.wrapS = brickTexture1.wrapT = THREE.RepeatWrapping; 
-	brickTexture1.repeat.set( 25, 25 );
- var brickTexture2 = new THREE.ImageUtils.loadTexture( 'tex/brick3.jpg' );
-	brickTexture2.wrapS = brickTexture2.wrapT = THREE.RepeatWrapping; 
-	brickTexture2.repeat.set( 20, 20 );
- var brickTexture3 = new THREE.ImageUtils.loadTexture( 'tex/brick4.jpg' );
-	brickTexture3.wrapS = brickTexture3.wrapT = THREE.RepeatWrapping; 
-	brickTexture3.repeat.set( 20, 20 );
-	
-var collisionmat2 = new THREE.MeshBasicMaterial({
-    wireframe: true
-      });
-	  
-//Collisionboxes
-var collisionmat = new THREE.MeshBasicMaterial({
-    transparent: true,
-	opacity: 0.0
-      });
-	  var halfExtents = new CANNON.Vec3(4,8,16);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 14;
-                    var y = 73;
-                    var z = -2;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, collisionmat );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = false;
-                    boxMesh.receiveShadow = false;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-	  var halfExtents = new CANNON.Vec3(4,6,16);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = -14;
-                    var y = 71;
-                    var z = -2;
-					
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, collisionmat );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = false;
-                    boxMesh.receiveShadow = false;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-					
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture3;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 49, -14);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 55, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture2;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 52, 2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 62, 10);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
 
-//Other Side
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 49, -14);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture2;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 56, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 52, 2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-               loader.load("models/building.js", 
-    function ( obj ) {
-	obj.material.map = brickTexture2;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 63, 10);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-//ROOF
-var roofTexture1 = new THREE.ImageUtils.loadTexture( 'tex/roof1.jpg' );
-	roofTexture1.wrapS = roofTexture1.wrapT = THREE.RepeatWrapping; 
-	roofTexture1.repeat.set( 6, 6 );   
-
-	var roofTexture2 = new THREE.ImageUtils.loadTexture( 'tex/roof2.jpg' );
-	roofTexture2.wrapS = roofTexture2.wrapT = THREE.RepeatWrapping; 
-	roofTexture2.repeat.set( 6, 6 ); 	
-	
-	var roofTexture3 = new THREE.ImageUtils.loadTexture( 'tex/roof3.jpg' );
-	roofTexture3.wrapS = roofTexture3.wrapT = THREE.RepeatWrapping; 
-	roofTexture3.repeat.set( 6, 6 ); 
-		
-		var roofTexture4 = new THREE.ImageUtils.loadTexture( 'tex/roof4.jpg' );
-	roofTexture4.wrapS = roofTexture4.wrapT = THREE.RepeatWrapping; 
-	roofTexture4.repeat.set( 6, 6 ); 
-	
-	var roofcover1 = new THREE.ImageUtils.loadTexture( 'tex/roofcover.jpg' );
-		roofcover1.wrapS = roofcover1.wrapT = THREE.RepeatWrapping; 
-	roofcover1.repeat.set( 3, 3 ); 
-	
-	
-				  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 49, -14);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-				  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 49, -14);
-	 obj.castShadow = false;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture2;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 55, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 55, -6);
-	 obj.castShadow = false;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture3;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 52, 2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 52, 2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture2;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 62, 10);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(14, 62, 10);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 49, -14);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 49, -14);
-	 obj.castShadow = false;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture2;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 56, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 56, -6);
-	 obj.castShadow = false;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture3;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 52, 2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 52, 2);
-	 obj.castShadow = false;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/buildingroof.js", 
-    function ( obj ) {
-	obj.material.map = roofTexture3;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 63, 10);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/roofcover.js", 
-    function ( obj ) {
-	obj.material.map = roofcover1;
-	//obj.material.bumpMap = brickTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 3.999, 3.999, 3.999 );
-	   obj.position.set(-14, 63, 10);
-	 obj.castShadow = false;
-	 obj.receiveShadow = true;
-    }   
-);
-//Windows etc
-var windowTexture1 = new THREE.ImageUtils.loadTexture( 'tex/window1.jpg' );
-var windowboxTexture1 = new THREE.ImageUtils.loadTexture( 'tex/windowbox.jpg' );
-var doorTexture1 = new THREE.ImageUtils.loadTexture( 'tex/door1.jpg' );
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, 0);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, 4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/windowbox.js", 
-    function ( obj ) {
-	obj.material.map = windowboxTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, 4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-				  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, 4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);	
-
-				  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, 0);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);	
-
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);			  
-				  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, -4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);		
-				  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);		
-				  loader.load("models/windowbox.js", 
-    function ( obj ) {
-	obj.material.map = windowboxTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, -6);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);		    
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, -8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/windowbox.js", 
-    function ( obj ) {
-	obj.material.map = windowboxTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/windowbox.js", 
-    function ( obj ) {
-	obj.material.map = windowboxTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, -16);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, -16);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/windowbox.js", 
-    function ( obj ) {
-	obj.material.map = windowboxTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, -16);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, -12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, -8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, -4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, 2);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 66, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 70, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 70, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 74, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 74, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 78, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 78, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 66, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 68, 4);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(-10, 68, 0);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
- loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 70, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 74, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 74, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 78, 8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-			  loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =  270 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(10, 78, 12);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-
-
-//Other Building Details
-//CuckooPub		
-var cuckootex = new THREE.ImageUtils.loadTexture( 'tex/details/cuckoosrest.jpg' );
-var cuckoosignmaterial = new THREE.MeshLambertMaterial( {map:cuckootex} );
-var cuckoosign = new THREE.Mesh( new THREE.PlaneGeometry( 4, 0.8, 1 ), cuckoosignmaterial );
-scene.add( cuckoosign );
-cuckoosign.position.set(9.999,68,2);
-cuckoosign.rotation.y = - 90 * ( Math.PI / 180 );
-
-var shoetex = new THREE.ImageUtils.loadTexture( 'tex/details/shoemakersign.jpg' );
-var shoesignmaterial = new THREE.MeshLambertMaterial( {map:shoetex} );
-var shoesign = new THREE.Mesh( new THREE.PlaneGeometry( 4, 0.8, 1 ), shoesignmaterial );
-scene.add( shoesign );
-shoesign.position.set(-9.999,68,-6);
-shoesign.rotation.y =   90 * ( Math.PI / 180 );
-
-
-	loader.load("models/window1.js", 
-    function ( obj ) {
-	obj.material.map = windowTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 180 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(16, 65.75, -18);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-/*var libsigntex = new THREE.ImageUtils.loadTexture( 'tex/details/libraryfleg.jpg' );
-var libsignmaterial = new THREE.MeshLambertMaterial( {map:libsigntex} );
-var libsign = new THREE.Mesh( new THREE.PlaneGeometry( 2, 6, 1 ), libsignmaterial );
-scene.add( libsign );
-libsign.position.set(14,75,14.001);
-*/
-	loader.load("models/windowbox.js", 
-    function ( obj ) {
-	obj.material.map = windowboxTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 180 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.4, 0.4, 0.4 );
-	   obj.position.set(16, 65.75, -18);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-	loader.load("models/door1.js", 
-    function ( obj ) {
-	obj.material.map = doorTexture1;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y = - 180 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.275, 0.275, 0.275);
-	   obj.position.set(12, 65, -18);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-var pedtex = new THREE.ImageUtils.loadTexture( 'tex/iron.jpg' );
-	loader.load("models/brazier.js", 
-    function ( obj ) {
-	obj.material.map = pedtex;
-	//obj.material.bumpMap = windowTexture1;
-	//obj.material.bumpScale = 0.015;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-       scene.add( obj );
-	   obj.rotation.y =   90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.8, 0.8, 0.8);
-	   obj.position.set(13, 65.5, -18);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-
-    }   
-);
-	 var balllight = new THREE.PointLight(0xFF9500, 1, 6 );
-scene.add(balllight);
-balllight.position.set(13,66,-18.4);
 
 //Library
 
@@ -2582,7 +1234,7 @@ loader.load("models/librarybaserock.json",
     function ( obj ) {
 	obj.material.map = base;
 	obj.material.bumpMap = base;
-	obj.material.bumpScale = 0.05;
+	obj.material.bumpScale = 0.25;
 	//obj.material.emmissive = 0xcccccc;
 	obj.material.shininess = 0.4;
 	obj.material.shading = THREE.SmoothShading;
@@ -2641,12 +1293,90 @@ loader.load("models/archbridge.json",
 	 obj.receiveShadow = false;
     }   
 );
-
+										 	var libbridgewalltex = new THREE.ImageUtils.loadTexture("tex/marble.jpg")     
+libbridgewalltex.wrapS	= THREE.RepeatWrapping;
+	libbridgewalltex.wrapT	= THREE.RepeatWrapping;
+	libbridgewalltex.repeat.x= 10
+	libbridgewalltex.repeat.y= 10
+loader.load("models/libraryfence.json", 
+    function ( obj ) {
+	obj.material.map = libbridgewalltex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   var basescale = 2.68125;
+	   obj.scale.set( 1, 1, 1 );
+	   obj.rotation.y = 90  * ( Math.PI / 180 );
+	   obj.position.set(3.75,65,-42);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+    }   
+);
+loader.load("models/libraryfence.json", 
+    function ( obj ) {
+	obj.material.map = libbridgewalltex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   var basescale = 2.68125;
+	   obj.scale.set( 1, 1, 1 );
+	   obj.rotation.y = 90  * ( Math.PI / 180 );
+	   obj.position.set(-3.75,65,-42);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+    }   
+);
+			 var halfExtents = new CANNON.Vec3(0.2,0.5,10);
+							 var collmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0});
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(0,0,0);
+				var x = 3.75;
+                    var y = 65;
+                    var z = -52;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                   // var boxMesh = new THREE.Mesh( boxGeometry, collmat );
+                    world.add(boxBody);
+                   // scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+								 var halfExtents = new CANNON.Vec3(0.2,0.5,10);
+							 var collmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0});
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(0,0,0);
+				var x = -3.75;
+                    var y = 65;
+                    var z = -52;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                   // var boxMesh = new THREE.Mesh( boxGeometry, collmat );
+                    world.add(boxBody);
+                   // scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					
+//BRIDGE TO EAST CITY
 	var brickbridgetex = new THREE.ImageUtils.loadTexture("tex/brick.jpg")     
 brickbridgetex.wrapS	= THREE.RepeatWrapping;
 	brickbridgetex.wrapT	= THREE.RepeatWrapping;
-	brickbridgetex.repeat.x= 20
-	brickbridgetex.repeat.y= 15
+	brickbridgetex.repeat.x= 200
+	brickbridgetex.repeat.y= 150
 loader.load("models/largebridge.json", 
     function ( obj ) {
 	obj.material.map = brickbridgetex;
@@ -2658,7 +1388,7 @@ loader.load("models/largebridge.json",
 		obj.geometry.computeVertexNormals();
 	   obj.scale.set( 2, 2, 2 );
 	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(46,63,20);
+	   obj.position.set(56,63,20);
 	 obj.castShadow = true;
 	 obj.receiveShadow = false;
     }   
@@ -2674,34 +1404,140 @@ loader.load("models/largebridge.json",
 		obj.geometry.computeVertexNormals();
 	   obj.scale.set( 2, 2, 2 );
 	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(86,63,20);
+	   obj.position.set(96,63,20);
 	 obj.castShadow = true;
 	 obj.receiveShadow = false;
     }   
 );
-	var firethingtex = new THREE.ImageUtils.loadTexture("tex/fireholdertex.png")     
-firethingtex.wrapS	= THREE.RepeatWrapping;
-	firethingtex.wrapT	= THREE.RepeatWrapping;
-	firethingtex.repeat.x= 2
-	firethingtex.repeat.y= 2
-loader.load("models/fireholderthing.json", 
+					 var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
+	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+	floorTexture.repeat.set(60, 24 );
+	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
+	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
+	floorbumpTexture.repeat.set( 60, 24 );
+	var patramaterial = new THREE.MeshPhongMaterial({
+        map: floorTexture,
+		bumpMap: floorbumpTexture,
+		bumpScale: 0.0085
+      });
+ var halfExtents = new CANNON.Vec3(20,0.002,8);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 56;
+                    var y = 63;
+                    var z = 20;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+ var halfExtents = new CANNON.Vec3(20,0.002,8);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 96;
+                    var y = 63;
+                    var z = 20;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					 //side
+					 	var brickbridgewalltex = new THREE.ImageUtils.loadTexture("tex/brick.jpg")     
+brickbridgewalltex.wrapS	= THREE.RepeatWrapping;
+	brickbridgewalltex.wrapT	= THREE.RepeatWrapping;
+	brickbridgewalltex.repeat.x= 40.5
+	brickbridgewalltex.repeat.y= 0.2
+	bridgewallmat = new THREE.MeshLambertMaterial({map:brickbridgewalltex});
+					 var halfExtents = new CANNON.Vec3(40,0.5,0.25);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(0,0,0);
+				var x = 76;
+                    var y = 63;
+                    var z = 27.8;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, bridgewallmat );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					
+							 var halfExtents = new CANNON.Vec3(40,0.5,0.25);
+							 var collmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0});
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(0,0,0);
+				var x = 76;
+                    var y = 63;
+                    var z = 11.8;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                   // var boxMesh = new THREE.Mesh( boxGeometry, collmat );
+                    world.add(boxBody);
+                   // scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+										 	var brickbridgewalltex = new THREE.ImageUtils.loadTexture("tex/marble.jpg")     
+brickbridgewalltex.wrapS	= THREE.RepeatWrapping;
+	brickbridgewalltex.wrapT	= THREE.RepeatWrapping;
+	brickbridgewalltex.repeat.x= 40
+	brickbridgewalltex.repeat.y= 40
+					loader.load("models/longnicewall.json", 
     function ( obj ) {
-	obj.material.map = firethingtex;
+	obj.material.map = brickbridgewalltex;
 	obj.material.shininess = 1;
 	obj.material.shading = THREE.SmoothShading;
        scene.add( obj );
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   obj.geometry.mergeVertices();
 		obj.geometry.computeVertexNormals();
-	   obj.scale.set( 1, 1, 1 );
+	   obj.scale.set( 0.25,0.25,0.25 );
 	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(0,65,20);
+	   obj.position.set(36,62.9,12.2501);
 	 obj.castShadow = true;
 	 obj.receiveShadow = false;
-	 obj.transparent=true;
     }   
 );
-
+					loader.load("models/longnicewall.json", 
+    function ( obj ) {
+	obj.material.map = brickbridgewalltex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   obj.scale.set( 0.25,0.25,0.25  );
+	   //obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(36,62.9,27.7499);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+    }   
+);
 //Bridge
 					 var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -2758,57 +1594,25 @@ var halfExtents = new CANNON.Vec3(4,0.5,10);
                     boxMesh.castShadow = true;
                     boxMesh.receiveShadow = true;
                     boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-	//Fence1
- var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/ironfence2.png' );
-	fenceTexture.wrapS = fenceTexture.wrapT = THREE.RepeatWrapping; 
-	fenceTexture.repeat.set( 25, 1 );
-var fencematerial = new THREE.MeshPhongMaterial({
-        map: fenceTexture,
-		bumpMap: fenceTexture,
-		bumpScale: 0.5,
-		transparent: true
-      });
- var halfExtents = new CANNON.Vec3(0.001,0.75,10);
-                var boxShape = new CANNON.Box(halfExtents);
-				//z is double the Vec3 for z in halfExtents
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x,halfExtents.y,20);
-				var x = 4;
-                    var y = 65.375;
-                    var z = -52.25;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
                     boxMeshes.push(boxMesh);	
 
- var halfExtents = new CANNON.Vec3(0.001,0.75,10);
-                var boxShape = new CANNON.Box(halfExtents);
-				//z is double the Vec3 for z in halfExtents
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x,halfExtents.y,20);
-				var x = -4;
-                    var y = 65.375;
-                    var z = -52.25;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-					
+//Outside City
+loader.load("models/tallrock.json", 
+    function ( obj ) {
+	obj.material.map = brickbridgewalltex;
+	obj.material.shininess = 1;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   obj.scale.set( 1,1,1  );
+	   //obj.rotation.y = -90  * ( Math.PI / 180 );
+	   obj.position.set(0,65,11.8);
+	 obj.castShadow = true;
+	 obj.receiveShadow = false;
+    }   
+);				
 // SKY?
 var path = "tex/sunnysky/";
                 var format = '.jpg';
