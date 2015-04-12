@@ -158,7 +158,7 @@ window.addEventListener("load", function(){
 			<img src="images/logolarge.png" width="100%" height="auto"><br>
                 <span style="font-size:40px">CLICK TO PLAY</span>
                 <br />
-				
+				Last Update: 12/04/2015
 				<br />
                 (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK = Shoot) <br />
 			<i>	Pre-ALPHA </i> <br />
@@ -169,7 +169,7 @@ window.addEventListener("load", function(){
 
         </div>
         <script>
-
+	
             var sphereShape, sphereBody, world, physicsMaterial, walls=[], balls=[], ballMeshes=[], boxes=[], boxMeshes=[];
 
             var camera, scene, renderer;
@@ -286,7 +286,7 @@ document.body.appendChild( stats.domElement );
                 world.defaultContactMaterial.contactEquationRegularizationTime = 60;
 
                 solver.iterations = 50;
-                solver.tolerance = 0.0001;
+                solver.tolerance = 0.01;
                 var split = true;
                 if(split)
                     world.solver = new CANNON.SplitSolver(solver);
@@ -301,7 +301,7 @@ document.body.appendChild( stats.domElement );
                 var physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial,
                                                                         physicsMaterial,
                                                                         0.0, // friction coefficient
-                                                                        0.0000003  // restitution
+                                                                        0.03  // restitution
                                                                         );
                 // We must add the contact materials to the world
                 world.addContactMaterial(physicsContactMaterial);
@@ -312,7 +312,7 @@ document.body.appendChild( stats.domElement );
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
-                sphereBody.position.set(10,66,-50);
+                sphereBody.position.set(0,66,-44);
                 sphereBody.linearDamping = 0.999;
                 world.add(sphereBody);
 			
@@ -433,13 +433,13 @@ testplane.rotation.x = -90 * Math.PI / 180;
 //Terrain
 var collisionmaterial2 = new THREE.MeshLambertMaterial({color: 0xff0000, wireframe: true});
 	var matrix = [];
-            var sizeX = 128,
-                sizeY = 128;
+            var sizeX = 128*2,
+                sizeY = 128*2;
 
 for (var i = 0; i < sizeX; i++) {
                 matrix.push([]);
                 for (var j = 0; j < sizeY; j++) {
-                    var height = Math.cos(i / sizeX * Math.PI * 1) * Math.cos(j/sizeY * Math.PI * 1) * 2 + 2;
+                    var height = Math.cos(i / sizeX * Math.PI * 5) * Math.cos(j/sizeY * Math.PI * 5) * 2 + 2;
                     if(i===0 || i === sizeX-1 || j===0 || j === sizeY-1)
                         height = 5;
                     matrix[i].push(height);
@@ -447,7 +447,7 @@ for (var i = 0; i < sizeX; i++) {
             }
 
             var hfShape = new CANNON.Heightfield(matrix, {
-                elementSize: 200 / sizeX
+                elementSize: 500 / sizeX
             });
 			
             var hfBody = new CANNON.Body({ mass: 0});
@@ -456,11 +456,11 @@ for (var i = 0; i < sizeX; i++) {
            // hfBody.position.set(-sizeX * hfShape.elementSize / 2, -sizeY * hfShape.elementSize / 2, -1);
 		   hfBody.position.set(0,0,0);
 		   //hfBody.position.set(0, 4.1, 0);
-		   hfBody.position.set(-sizeX * hfShape.elementSize / 2, 60, -100);
-		   var rot = new CANNON.Vec3(1,0,0)
-    
+		   hfBody.position.set(-sizeX * hfShape.elementSize / 2, 60, 550);
+		   var rot = new CANNON.Vec3(-1,0,0)
+    hfBody.quaternion.setFromAxisAngle(rot,(Math.PI/2));
             world.add(hfBody);
-			hfBody.quaternion.setFromAxisAngle(rot,(Math.PI/2));
+			
 			
 var geometry = new THREE.Geometry();
 
@@ -493,10 +493,12 @@ var geometry = new THREE.Geometry();
 			geometry.computeVertexNormals();
             terrainmesh = new THREE.Mesh(geometry,collisionmaterial2);
 			scene.add(terrainmesh);
-					   var rot = new CANNON.Vec3(1,0,0)
+					   var rot = new CANNON.Vec3(-1,0,0)
     terrainmesh.quaternion.setFromAxisAngle(rot,(Math.PI/2));
-	terrainmesh.position.set(-sizeX * hfShape.elementSize / 2, 60, -100);
+	//terrainmesh.position.set(-sizeX * hfShape.elementSize / 2, 60, -100);
+	terrainmesh.position.set(-sizeX * hfShape.elementSize / 2, 60, 550);
 
+	
  //City Floor BOX
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
