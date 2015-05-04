@@ -317,10 +317,10 @@ document.body.appendChild( stats.domElement );
                 sphereBody.addShape(sphereShape);
                 //sphereBody.position.set(0,66,-44);
 				//sphereBody.position.set(0,86,1000);
-				sphereBody.position.set(0,171.8,4000);
-                sphereBody.linearDamping = 0.999;
+				sphereBody.position.set(84,195,3770);
+                sphereBody.linearDamping = 0.9999;
                 world.add(sphereBody);
-			
+							
 
    /*             // Create a plane
                 var groundShape = new CANNON.Plane(10,30,10);
@@ -474,11 +474,15 @@ img.onload = function () {
  var grasstex = new THREE.ImageUtils.loadTexture( 'tex/grass2.jpg' );
 	grasstex.wrapS = grasstex.wrapT = THREE.RepeatWrapping; 
 	grasstex.repeat.set( 10240, 10240 ); 
+	var rocklayertex = new THREE.ImageUtils.loadTexture( 'tex/rockbase.jpg' );
+	rocklayertex.wrapS = rocklayertex.wrapT = THREE.RepeatWrapping; 
+	rocklayertex.repeat.set( 10240, 10240 ); 
     // plane
 	//var geometry = new THREE.PlaneGeometry(2560,2560,63,63);
     var geometry = new THREE.PlaneGeometry(5120,5120,95,95);
     var texture = THREE.ImageUtils.loadTexture( 'tex/heightfield2.png' );
-    var material = new THREE.MeshPhongMaterial( {  map:grasstex, wireframe: false, bumpMap: grasstex, bumpScale: 0.000, shininess:0.1 } );
+    var material = new THREE.MeshPhongMaterial( {  map:grasstex, wireframe: false, bumpMap: grasstex, bumpScale: 0.00, shininess:0.1, transparent: true} );
+	var materialrock = new THREE.MeshPhongMaterial( {  map:rocklayertex, wireframe: false, bumpMap: rocklayertex, bumpScale: 0.20, shininess:0.1 } );
 	//var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
 	var material2 = new THREE.MeshBasicMaterial( { opacity: 0, transparent: true} );
     plane = new THREE.Mesh( geometry, material );
@@ -495,6 +499,10 @@ img.onload = function () {
    //plane.rotation.x = - 90 * ( Math.PI / 180 );
    var rot = new THREE.Vector3(-1,0,0)
 		plane.quaternion.setFromAxisAngle(rot,(Math.PI/2));
+		/*var rocklayer = new THREE.Mesh(plane.geometry, materialrock);
+		scene.add(rocklayer);
+		rocklayer.position.set(0,-1.001,2560);
+		rocklayer.quaternion.setFromAxisAngle(rot,(Math.PI/2));*/
   /* 
            var vertices = [
 plane.geometry.vertices.length
@@ -556,8 +564,47 @@ plane.geometry.vertices.length
 // load img source
 img.src = "tex/heightfield2.png";
 
-
-
+//Terrain Detail
+	var rocktex = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
+rocktex.wrapS	= THREE.RepeatWrapping;
+	rocktex.wrapT	= THREE.RepeatWrapping;
+	rocktex.repeat.x= 22
+	rocktex.repeat.y= 20
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/rockrandom.json", 
+    function ( obj ) {
+	obj.material.map = rocktex;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.scale.set( 2, 2, 2 );
+	   obj.position.set(50,160,4000);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
+	var pinetex = new THREE.ImageUtils.loadTexture("tex/pine.png")     
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/pinetree1.js", 
+    function ( obj ) {
+	obj.material.map = pinetex;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.scale.set( 0.6, 0.6, 0.6 );
+	   obj.position.set(12,168,4000);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
  //City Floor BOX
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -1845,6 +1892,25 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
 				var moveobject= new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), material );
 				scene.add(moveobject);
 				moveobject.position.set(0,65.5,-34);
+	
+//Enemies
+   material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true} );
+var ballShape2 = new CANNON.Sphere(1);
+            var ballGeometry = new THREE.SphereGeometry(ballShape2.radius, 24, 24);
+                    var enemyBody = new CANNON.Body({ mass: 5 });
+                    enemyBody.addShape(ballShape2);
+                    var enemyMesh = new THREE.Mesh( ballGeometry, material );
+                    world.add(enemyBody);
+					enemyBody.linearDamping = 0.9999
+					enemyBody.fixedRotation = true;
+                    scene.add(enemyMesh);
+                    enemyMesh.castShadow = false;
+                    enemyMesh.receiveShadow = false;
+                    balls.push(enemyBody);
+					ballMeshes.push(enemyMesh);
+					enemyBody.position.set(0,185,4000);
+					
+					enemyMesh.position.set(enemyBody.position);
 				
 				// Add linked boxes
 			/*	
@@ -1890,18 +1956,20 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 renderer.setSize( window.innerWidth, window.innerHeight );
             }
 
-            var dt = 1/120;
+            var dt = 1/60;
             function animate() {
 			stats.begin();
 			stats.end();
                 requestAnimationFrame( animate );
                 if(controls.enabled){
                     world.step(dt);
+					
                     // Update ball positions
                     for(var i=0; i<balls.length; i++){
                         ballMeshes[i].position.copy(balls[i].position);
                         ballMeshes[i].quaternion.copy(balls[i].quaternion);
-                    }		
+                    }	
+					
                     // Update box positions
                     for(var i=0; i<boxes.length; i++){
                         boxMeshes[i].position.copy(boxes[i].position);
@@ -1921,7 +1989,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
             }
 
             var ballShape = new CANNON.Sphere(0.1);
-            var ballGeometry = new THREE.SphereGeometry(ballShape.radius, 24, 24);
+            var ballGeometry = new THREE.SphereGeometry(ballShape.radius/2, 24, 24);
             var shootDirection = new THREE.Vector3();
             var shootVelo = 100;
             var projector = new THREE.Projector();
@@ -1937,6 +2005,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
 
             window.addEventListener("click",function(e){
                 if(controls.enabled==true){
+				console.log(sphereBody.position);
                     var x = sphereBody.position.x;
                     var y = sphereBody.position.y;
                     var z = sphereBody.position.z;
@@ -1949,7 +2018,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                     world.add(ballBody);
                     scene.add(ballMesh);
                     ballMesh.castShadow = false;
-                    ballMesh.receiveShadow = true;
+                    ballMesh.receiveShadow = false;
                     balls.push(ballBody);
 					var spriteMaterial = new THREE.SpriteMaterial( 
 					{ 
@@ -1965,14 +2034,18 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                     ballBody.velocity.set(  shootDirection.x * shootVelo,
                                             shootDirection.y * shootVelo,
                                             shootDirection.z * shootVelo);
-
+				ballBody.addEventListener("collide",function(e){
+              console.log("Spell impact");
+             console.log("Collided with:",e.body);
+			 scene.remove(ballMesh);
+			 world.remove(ballBody);	 
+          });	
                     // Move the ball outside the player sphere
                     x += shootDirection.x * (sphereShape.radius*1.02 + ballShape.radius);
                     y += shootDirection.y * (sphereShape.radius*1.02 + ballShape.radius);
                     z += shootDirection.z * (sphereShape.radius*1.02 + ballShape.radius);
                     ballBody.position.set(x,y,z);
                     ballMesh.position.set(x,y,z);
-					
                 }
             });
 
