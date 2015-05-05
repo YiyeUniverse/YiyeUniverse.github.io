@@ -148,6 +148,8 @@ window.addEventListener("load", function(){
 		<script src="js/stats.min.js"></script>
 		<script src="js/Mirror.js"></script>
 		<script src="js/WaterShader.js"></script>
+		<script src="js/TerrainShaders.js"></script>
+        <script src="js/TerrainMaterial.js"></script>
 		 
         <div id="blocker">
 
@@ -317,7 +319,9 @@ document.body.appendChild( stats.domElement );
                 sphereBody.addShape(sphereShape);
                 //sphereBody.position.set(0,66,-44);
 				//sphereBody.position.set(0,86,1000);
-				sphereBody.position.set(84,195,3770);
+				sphereBody.position.set(0,195,-40000);
+				//sphereBody.position.set(84,195,3770);
+				//sphereBody.position.set(84,800,3770);
                 sphereBody.linearDamping = 0.9999;
                 world.add(sphereBody);
 							
@@ -435,8 +439,170 @@ testplane.rotation.x = -90 * Math.PI / 180;
                     boxMeshes.push(boxMesh);
                 }
 */
+//First Zone Start Tree Interior Dark
+var blankmaterial = new THREE.MeshBasicMaterial({color:0x000000});
+ var halfExtents = new CANNON.Vec3(40,0.002,40);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 0;
+                    var y = 194;
+                    var z = -40039;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, blankmaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					var halfExtents = new CANNON.Vec3(40,0.002,40);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 0;
+                    var y = 234;
+                    var z = -40039;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, blankmaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+ var halfExtents = new CANNON.Vec3(0.002,40,40);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 40;
+                    var y = 194;
+                    var z = -40039;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, blankmaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					 var halfExtents = new CANNON.Vec3(0.002,40,40);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = -40;
+                    var y = 194;
+                    var z = -40039;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, blankmaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					 var halfExtents = new CANNON.Vec3(40,40,0.002);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 0;
+                    var y = 194;
+                    var z = -39999;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, blankmaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					 var halfExtents = new CANNON.Vec3(40,40,0.002);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 0;
+                    var y = 194;
+                    var z = -40039;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, blankmaterial );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);
+					var doormaterial = new THREE.MeshBasicMaterial({map:new THREE.ImageUtils.loadTexture("tex/doortree.png"), transparent: true});
+					//var doorgeometry = new THREE.PlaneGeometry( 1, 1, 1 );
+					//var doorplane = new THREE.Mesh( doorgeometry, doormaterial );
+					var halfExtents = new CANNON.Vec3(1,1,0.5);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,0.00001);
+					var x = 0;
+                    var y = 195;
+                    var z = -40038.9;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var doorBody = new CANNON.Body({ mass: 0 });
+                    doorBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, doormaterial );
+                    world.add(doorBody);
+                    scene.add(boxMesh);
+                    doorBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(doorBody);
+                    boxMeshes.push(boxMesh);
+							  doorBody.addEventListener("collide",function(e){
+   sphereBody.position.set(84,195,3770);	 
+          });
+//scene.add( doorplane );
+//doorplane.position.set(0,200,-4038.78);
 //TERRAIN HFSHAPE
 //return array with height data from img
+                var splat1 = THREE.ImageUtils.loadTexture("tex/rockbase.jpg");
+                var splat2 = THREE.ImageUtils.loadTexture("tex/SUNNY-Assorted-Ground.png");
+                var splat3 = THREE.ImageUtils.loadTexture("tex/SUNNY-Assorted-Ground.png");
+                var splat4 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
+
+                //TextureMap
+				var alphaMap = THREE.ImageUtils.loadTexture("tex/splat2.png");
+				//var alphaMap = THREE.ImageUtils.loadTexture("textures/terrain/splat2 - Copy.png");
+
+                terrainUniforms.tAlphaMap.value = alphaMap;
+                terrainUniforms.tSplat1.value = splat1;
+                terrainUniforms.tSplat2.value = splat2;
+                terrainUniforms.tSplat3.value = splat3;
+                terrainUniforms.tSplat4.value = splat4;
+
+                var terrainMaterial = new THREE.TerrainMaterial( {
+                    uniforms: terrainUniforms,
+                    vertexShader: terrainVertexShader,
+                    fragmentShader:terrainFragShader,
+					shading:THREE.SmoothShading,
+					//bumpMap: terrainFragShader,
+					//bumpScale:100,
+                    lights: true,
+                    fog: true
+                });
+				
 function getHeightData(img,scale) {
   
  if (scale == undefined) scale=1;
@@ -485,7 +651,7 @@ img.onload = function () {
 	var materialrock = new THREE.MeshPhongMaterial( {  map:rocklayertex, wireframe: false, bumpMap: rocklayertex, bumpScale: 0.20, shininess:0.1 } );
 	//var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
 	var material2 = new THREE.MeshBasicMaterial( { opacity: 0, transparent: true} );
-    plane = new THREE.Mesh( geometry, material );
+    plane = new THREE.Mesh( geometry, terrainMaterial );
      
     //set height of vertices
     for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
@@ -1983,6 +2149,7 @@ var ballShape2 = new CANNON.Sphere(1);
 					if (sphereBody.position.y < 26){
 				sphereBody.position.set(0,66,-44);
 				}	
+				
                 renderer.render( scene, camera );			
                 time = Date.now();
 
@@ -2040,6 +2207,8 @@ var ballShape2 = new CANNON.Sphere(1);
 			 scene.remove(ballMesh);
 			 world.remove(ballBody);	 
           });	
+		  
+
                     // Move the ball outside the player sphere
                     x += shootDirection.x * (sphereShape.radius*1.02 + ballShape.radius);
                     y += shootDirection.y * (sphereShape.radius*1.02 + ballShape.radius);
