@@ -133,6 +133,7 @@ function checkTime(i) {
 }
 </script>
 <script>
+var canshoot=false;
 window.addEventListener("load", function(){
 	var load_screen = document.getElementById("load_screen");
 	document.body.removeChild(load_screen);
@@ -319,7 +320,7 @@ document.body.appendChild( stats.domElement );
                 sphereBody.addShape(sphereShape);
                 //sphereBody.position.set(0,66,-44);
 				//sphereBody.position.set(0,86,1000);
-				sphereBody.position.set(0,195,-40000);
+				sphereBody.position.set(0,195,-40008);
 				//sphereBody.position.set(84,195,3770);
 				//sphereBody.position.set(84,800,3770);
                 sphereBody.linearDamping = 0.9999;
@@ -342,7 +343,7 @@ document.body.appendChild( stats.domElement );
 					camera.add(camlight);
 
                 scene = new THREE.Scene();
-                scene.fog = new THREE.Fog( 0xffffff, 0, 5000 );
+                scene.fog = new THREE.Fog( 0xddddff, 0, 5000 );
 
                 var ambient = new THREE.AmbientLight( 0x222222 );
                 scene.add( ambient );
@@ -396,7 +397,7 @@ var menucylinder = new THREE.Mesh( menugeometry, menumaterial );
 scene.add( menucylinder );
 
 				//Rendering and all that jazz
-                renderer = new THREE.WebGLRenderer({antialias:false});
+                renderer = new THREE.WebGLRenderer({antialias:true});
 				renderer.sortObjects = true;
                 renderer.shadowMapEnabled = false;
                 renderer.shadowMapSoft = false;
@@ -571,15 +572,19 @@ var blankmaterial = new THREE.MeshBasicMaterial({color:0x000000});
                     boxes.push(doorBody);
                     boxMeshes.push(boxMesh);
 							  doorBody.addEventListener("collide",function(e){
-   sphereBody.position.set(84,195,3770);	 
+  var canshoot=true;   
+  //player position through door
+ //sphereBody.position.set(84,214.5,3770);
+ sphereBody.position.set(32,221.5,5239); 
+//sphereBody.position.set(1200,395,3770);	
           });
 //scene.add( doorplane );
 //doorplane.position.set(0,200,-4038.78);
 //TERRAIN HFSHAPE
 //return array with height data from img
                 var splat1 = THREE.ImageUtils.loadTexture("tex/rockbase.jpg");
-                var splat2 = THREE.ImageUtils.loadTexture("tex/SUNNY-Assorted-Ground.png");
-                var splat3 = THREE.ImageUtils.loadTexture("tex/SUNNY-Assorted-Ground.png");
+                var splat2 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
+                var splat3 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
                 var splat4 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
 
                 //TextureMap
@@ -645,7 +650,7 @@ img.onload = function () {
 	rocklayertex.repeat.set( 10240, 10240 ); 
     // plane
 	//var geometry = new THREE.PlaneGeometry(2560,2560,63,63);
-    var geometry = new THREE.PlaneGeometry(5120,5120,95,95);
+    var geometry = new THREE.PlaneGeometry(10240,10240,95,95);
     var texture = THREE.ImageUtils.loadTexture( 'tex/heightfield2.png' );
     var material = new THREE.MeshPhongMaterial( {  map:grasstex, wireframe: false, bumpMap: grasstex, bumpScale: 0.00, shininess:0.1, transparent: true} );
 	var materialrock = new THREE.MeshPhongMaterial( {  map:rocklayertex, wireframe: false, bumpMap: rocklayertex, bumpScale: 0.20, shininess:0.1 } );
@@ -655,13 +660,13 @@ img.onload = function () {
      
     //set height of vertices
     for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
-         plane.geometry.vertices[i].z = data[i]*6;
+         plane.geometry.vertices[i].z = data[i]*12;
     }
  
     scene.add(plane);
 	plane.castShadow=true;
 	plane.receiveShadow=true;
-   plane.position.set(0,-1,2560);
+   plane.position.set(0,-1,5120);
    //plane.rotation.x = - 90 * ( Math.PI / 180 );
    var rot = new THREE.Vector3(-1,0,0)
 		plane.quaternion.setFromAxisAngle(rot,(Math.PI/2));
@@ -699,7 +704,7 @@ plane.geometry.vertices.length
 		var trimeshBody = new CANNON.Body({ mass: 0 });
 		trimeshBody.addShape(shape);
 		world.add(trimeshBody);
-		trimeshBody.position.set(0, -1, 2560);
+		trimeshBody.position.set(0, -1, 5120);
 		var rot = new CANNON.Vec3(-1,0,0)
 		trimeshBody.quaternion.setFromAxisAngle(rot,(Math.PI/2));
 		
@@ -725,7 +730,7 @@ plane.geometry.vertices.length
 			scene.add(testmesh);
 			var rot = new CANNON.Vec3(-1,0,0)
 		testmesh.quaternion.setFromAxisAngle(rot,(Math.PI/2));
-		testmesh.position.set(0,-1,2560);
+		testmesh.position.set(0,-1,5120);
 };
 // load img source
 img.src = "tex/heightfield2.png";
@@ -753,9 +758,11 @@ loader.load("models/rockrandom.json",
 	 obj.receiveShadow = true;
     }   
 );
-	var pinetex = new THREE.ImageUtils.loadTexture("tex/pine.png")     
+ var pinetex = new THREE.ImageUtils.loadTexture( 'tex/bark.jpg' );
+	pinetex.wrapS = pinetex.wrapT = THREE.RepeatWrapping; 
+	pinetex.repeat.set( 10, 10 );    
 					var loader = new THREE.ObjectLoader();	
-loader.load("models/pinetree1.js", 
+loader.load("models/treenew.json", 
     function ( obj ) {
 	obj.material.map = pinetex;
 	//obj.material.emmissive = 0xcccccc;
@@ -766,7 +773,24 @@ loader.load("models/pinetree1.js",
 		obj.geometry.computeVertexNormals();
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   obj.scale.set( 0.6, 0.6, 0.6 );
-	   obj.position.set(12,168,4000);
+	   obj.position.set(36,220,5230);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
+ var treetoptex = new THREE.ImageUtils.loadTexture( 'tex/treetex.png' );
+loader.load("models/treetoptest.json", 
+    function ( obj ) {
+	obj.material.map = treetoptex;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.scale.set( 0.6, 0.6, 0.6 );
+	   obj.position.set(36,220,5230);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
     }   
@@ -2008,7 +2032,7 @@ var path = "tex/sunnysky/";
                 });
 
                 // The box dimension size doesn't matter that much when the mainCamera is in the centre.  Experiment with the values.
-                skyboxMesh = new THREE.Mesh(new THREE.BoxGeometry(20000, 20000, 20000, 1, 1, 1), skyMaterial);
+                skyboxMesh = new THREE.Mesh(new THREE.BoxGeometry(40000, 40000, 40000, 1, 1, 1), skyMaterial);
                 scene.add(skyboxMesh);
 				//skyboxMesh.rotation.y = -  * ( Math.PI / 180 );
 //SEA
@@ -2067,7 +2091,7 @@ var ballShape2 = new CANNON.Sphere(1);
                     enemyBody.addShape(ballShape2);
                     var enemyMesh = new THREE.Mesh( ballGeometry, material );
                     world.add(enemyBody);
-					enemyBody.linearDamping = 0.9999
+					enemyBody.linearDamping = 0.99
 					enemyBody.fixedRotation = true;
                     scene.add(enemyMesh);
                     enemyMesh.castShadow = false;
@@ -2172,6 +2196,7 @@ var ballShape2 = new CANNON.Sphere(1);
 
             window.addEventListener("click",function(e){
                 if(controls.enabled==true){
+				if(canshoot=true){
 				console.log(sphereBody.position);
                     var x = sphereBody.position.x;
                     var y = sphereBody.position.y;
@@ -2215,6 +2240,7 @@ var ballShape2 = new CANNON.Sphere(1);
                     z += shootDirection.z * (sphereShape.radius*1.02 + ballShape.radius);
                     ballBody.position.set(x,y,z);
                     ballMesh.position.set(x,y,z);
+					}
                 }
             });
 
