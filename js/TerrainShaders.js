@@ -5,10 +5,10 @@ var terrainUniforms = {
     tSplat2: { type: "t", value: null },
     tSplat3: { type: "t", value: null },
     tSplat4: { type: "t", value: null },
-    uSplat1Repeat: { type: "v2", value: new THREE.Vector2(20480.0, 20480.0) },
-    uSplat2Repeat: { type: "v2", value: new THREE.Vector2(20480.0, 20480.0) },
-    uSplat3Repeat: { type: "v2", value: new THREE.Vector2(20480.0, 20480.0) },
-    uSplat4Repeat: { type: "v2", value: new THREE.Vector2(20480.0, 20480.0) },
+    uSplat1Repeat: { type: "v2", value: new THREE.Vector2(2560.0, 2560.0) },
+    uSplat2Repeat: { type: "v2", value: new THREE.Vector2(10240.0, 10240.0) },
+    uSplat3Repeat: { type: "v2", value: new THREE.Vector2(10240.0, 10240.0) },
+    uSplat4Repeat: { type: "v2", value: new THREE.Vector2(10240.0, 10240.0) },
     shininess: { type: "f", value: 3002.0 },
     specularStrength: { type: "6", value: 1 }
 };

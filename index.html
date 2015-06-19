@@ -1,126 +1,56 @@
-<!DOCTYPE HTML>
 <html>
-  <head>
-  <title> The Yiye Universe </title>
-  	<link rel="icon" 
-      href="images/favicon.ico">
-	  <link href='http://fonts.googleapis.com/css?family=Alegreya' rel='stylesheet' type='text/css'>
-  <style>
-body{
-background-color: #000000;
-margin: auto;
+	<head>
+	<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+		<style>
+		body{
+		background-color: #000000;
+		margin: 0px;
+		}
+		#sidebar{
+			margin-left: 0%;
+			margin-top:0px;
+			margin-bottom:0px;
+			width: 20%;
+			background-color: #000000;
+			color: #ffffff;
+			height: 100%;
+			font-family: 'Oswald', sans-serif;
+			font-size: 26px
+		}
+		a{
+	font-size:26px;
+	color:#FFF;
+      transition: all 0.3s ease-in;
+      text-decoration:none;
 }
+a:hover{
+	-webkit-stroke-width: 30px;
+      -webkit-stroke-color: #FFFFFF;
+      -webkit-fill-color: #FFFFFF;
+     
+	  color: #cccccc;
+}
+
 .github{
    position:absolute;
    top:0;
    right:0;
 }
-	/* flip the pane when hovered */
-	.flip-container:hover .flipper, .flip-container.hover .flipper {
-		transform: rotateY(180deg);
-	}
-  /* entire container, keeps perspective */
-.flip-container {
-	perspective: 1000;
-	margin: auto;
-}
-	/* flip the pane when hovered */
-	.flip-container:hover .flipper, .flip-container.hover .flipper {
-		transform: rotateY(180deg);
-	}
 
-.flip-container, .front, .back {
-	width: 640px;
-	height: 640px;
-}
-
-/* flip speed goes here */
-.flipper {
-	transition: 2s;
-	transform-style: preserve-3d;
-
-	position: relative;
-}
-
-/* hide back of pane during swap */
-.front, .back {
-	backface-visibility: hidden;
-
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-
-/* front pane, placed above back */
-.front {
-	z-index: 2;
-	/* for firefox 31 */
-	transform: rotateY(0deg);
-	background-color: #222222;
-	font-family: 'Alegreya', serif;
-}
-
-/* back, initially hidden pane */
-.back {
-	transform: rotateY(180deg);
-	background-color: #333333;
-	font-family: 'Alegreya', serif;
-	color: #ffffff;
-}
-/* unvisited link */
-a:link {
-    color: #FFFFFF;
-}
-
-/* visited link */
-a:visited {
-    color: #FFFFFF;
-}
-
-/* mouse over link */
-a:hover {
-    color: #dddddd;
-}
-
-/* selected link */
-a:active {
-    color: #FFFFFF;
-}
-</style>
-</head>
-<body>
-<script src= "js/Detector.js"> </script>
-<center>
-<div class="github"><a href="https://github.com/YiyeUniverse/YiyeUniverse.github.io"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+		</style>
+	</head>
+	
+	<body>
+	<div style="position: fixed; z-index: -99; width: 78%; height: 100%; right: 2%;">
+<iframe frameborder="0" height="100%" width="100%"src="https://www.youtube.com/embed/ReH7zzj5GPc?autoplay=1&controls=0&loop=1&rel=0&showinfo=0&autohide=1&wmode=transparent&hd=1" mar>
+  </iframe>
 </div>
-<img src="images/logolarge.png"> <br />
-<div class="flip-container" ontouchstart="this.classList.toggle('hover');">
-	<div class="flipper">
-		<div class="front">
-			<!-- front content -->
-			<img src="images/play.png">
-		</div>
-		<div class="back">
-		<span style="font-size:40px"> System requirements: </span> <br>
-		<span style="font-size:25px">
-		<ul>
-  <li>A modern browser with WebGL support such as Google Chrome or Mozilla Firefox</li>
-  <li>Windows, Mac or Linux operating system</li>
-  <li>512Mb RAM or above (Recommended)</li>
-</ul> 
-		<span style="font-size:40px"> Options: (these don't work, they're just placeholders) </span> <br>
-		<span style="font-size:25px">
-		<ul>
-  <li>Anti-aliasing</li>
-  <li>Half-size rendering (To Be Added)</li>
-  <li>Post Processing (To Be Added)</li>
-</ul> 
-			<CENTER>
-			</span>
-<span style="font-size:34px"><a href="game.html"> PLAY GAME </a> </span>
-			
-		</div>
+
+	<div id="sidebar">
+	<img src="http://yiyeuniverse.github.io/images/logolarge.png" width=100% height=auto margin-bottom=20px />
+	<CENTER>
+	<a href="game.html"> PLAY GAME </a> <br />
+	<a href="https://www.facebook.com/YiyeUniverseGame?fref=ts"> FACEBOOK </a>
 	</div>
-</div>
-</body>
-</html>  
+	</body>
+</html>

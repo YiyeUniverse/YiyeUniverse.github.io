@@ -3,7 +3,7 @@
     <head>
 	<link rel="icon" 
       href="images/favicon.ico">
-	  <link href='http://fonts.googleapis.com/css?family=Alegreya' rel='stylesheet' type='text/css'>
+	 <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
         <meta charset="utf-8">
         <title>The Yiye Universe</title>
 		
@@ -24,7 +24,7 @@
                 background-color: #ffffff;
                 margin: 0;
                 overflow: hidden;
-                font-family: 'Alegreya', serif;
+                font-family: 'Oswald', sans-serif;
 				font-size: 25px;
             }
 
@@ -103,7 +103,7 @@ div#load_screen{
 	cursor: wait;
 }
 div#load_screen > div#loading{
-font-family: 'Alegreya', serif;
+font-family: 'Oswald', sans-serif;
   width: 50%;
   height: 50%;
   overflow: auto;
@@ -113,6 +113,7 @@ font-family: 'Alegreya', serif;
   color: #FFFFFF;
   cursor: wait;
 }
+
         </style>
 		
 		<script>
@@ -151,6 +152,8 @@ window.addEventListener("load", function(){
 		<script src="js/WaterShader.js"></script>
 		<script src="js/TerrainShaders.js"></script>
         <script src="js/TerrainMaterial.js"></script>
+		<script src='js/threex.keyboardstate.js'></script>
+		<script src='js/threex.daynight.js'></script>
 		 
         <div id="blocker">
 
@@ -177,7 +180,7 @@ window.addEventListener("load", function(){
         <script>
 	
             var sphereShape, sphereBody, world, physicsMaterial, walls=[], balls=[], ballMeshes=[], boxes=[], boxMeshes=[];
-
+var keyboard    = new THREEx.KeyboardState();
             var camera, scene, renderer;
             var geometry, material, mesh;
             var controls,time = Date.now();
@@ -276,6 +279,7 @@ document.body.appendChild( stats.domElement );
 
             }
 
+			
             initCannon();
             init();
             animate();
@@ -313,17 +317,24 @@ document.body.appendChild( stats.domElement );
                 world.addContactMaterial(physicsContactMaterial);
 
                 // Create a sphere THIS IS THE PLAYER
-                var mass = 6, radius = 0.85;
+                var mass = 7, radius = 0.9;
 				//var mass = 5, radius = 1.3;
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
-                //sphereBody.position.set(0,66,-44);
+                sphereBody.position.set(0,66,141);
 				//sphereBody.position.set(0,86,1000);
-				sphereBody.position.set(0,195,-40008);
+				//sphereBody.position.set(0,195,-40008);
 				//sphereBody.position.set(84,195,3770);
 				//sphereBody.position.set(84,800,3770);
-                sphereBody.linearDamping = 0.9999;
+				
+				//position player in tree
+				//sphereBody.position.set(0,195,-40008);
+                //Actual Sphere Speed
+				sphereBody.linearDamping = 0.9995;
+				
+				//Debug speed
+						//sphereBody.linearDamping = 0.2;
                 world.add(sphereBody);
 							
 
@@ -338,19 +349,36 @@ document.body.appendChild( stats.domElement );
             function init() {
 
                 camera = new THREE.PerspectiveCamera( 90, window.innerWidth / window.innerHeight, 0.1, 50000 );
+									var loader = new THREE.ObjectLoader();	
+/*loader.load("models/basemesh.json", 
+    function ( obj ) {
+	obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       camera.add( obj );
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.rotation.y = - 180 * ( Math.PI / 180 );
+	   obj.scale.set( 0.08, 0.08, 0.08 );
+	   obj.position.set(0,-1,-0.8);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);*/
 				//sphereBody.position.set(0,66,0);
 				var camlight = new THREE.PointLight(0xFFFFFF, 0.5, 1 );
 					camera.add(camlight);
 
                 scene = new THREE.Scene();
-                scene.fog = new THREE.Fog( 0xddddff, 0, 5000 );
+                scene.fog = new THREE.FogExp2( 0xbbbbcc, 0.003 );
 
                 var ambient = new THREE.AmbientLight( 0x222222 );
                 scene.add( ambient );
 				var collisionmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0});
 				
                light = new THREE.DirectionalLight( 0xFFFFF2,1.5 );
-                light.position.set( -100, 1000, 2000 );
+                light.position.set( -100, 2000, 2000 );
                 light.target.position.set( 0, 0, 0 );
                 if(true){
                     light.castShadow = true;
@@ -367,7 +395,17 @@ document.body.appendChild( stats.domElement );
                     light.shadowCameraVisible = true;
                 }
                 scene.add( light );
-
+				
+				var cloudtex = new THREE.ImageUtils.loadTexture( 'tex/cloudlayer.png' );
+						//cloudtex.wrapS = cloudtex.wrapT = THREE.RepeatWrapping; 
+	//cloudtex.repeat.set( 3, 3 );
+				//var cloudgeometry = new THREE.SphereGeometry( 4500, 6, 6 );
+				var cloudgeometry = new THREE.SphereGeometry( 10000, 6, 6 );
+var cloudmaterial = new THREE.MeshBasicMaterial( {side: THREE.BackSide, map: cloudtex, transparent: true,fog: false,  color: 0xffffff } );
+var cloudsphere = new THREE.Mesh( cloudgeometry, cloudmaterial );
+scene.add( cloudsphere );
+cloudsphere.position.set(0,0,2000);
+//cloudsphere.rotation.x = 90  * ( Math.PI / 180 );
  
 /* light2 = new THREE.SpotLight( 0xFFFFF2,1.5 );
                 light2.position.set( 100, 300, 200 );
@@ -397,8 +435,8 @@ var menucylinder = new THREE.Mesh( menugeometry, menumaterial );
 scene.add( menucylinder );
 
 				//Rendering and all that jazz
-                renderer = new THREE.WebGLRenderer({antialias:true});
-				renderer.sortObjects = true;
+                renderer = new THREE.WebGLRenderer({antialias:false});
+				//renderer.sortObjects = true;
                 renderer.shadowMapEnabled = false;
                 renderer.shadowMapSoft = false;
                 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -575,17 +613,17 @@ var blankmaterial = new THREE.MeshBasicMaterial({color:0x000000});
   var canshoot=true;   
   //player position through door
  //sphereBody.position.set(84,214.5,3770);
- sphereBody.position.set(32,221.5,5239); 
+ sphereBody.position.set(32,821.5,5239); 
 //sphereBody.position.set(1200,395,3770);	
           });
 //scene.add( doorplane );
 //doorplane.position.set(0,200,-4038.78);
 //TERRAIN HFSHAPE
 //return array with height data from img
-                var splat1 = THREE.ImageUtils.loadTexture("tex/rockbase.jpg");
+                var splat1 = THREE.ImageUtils.loadTexture("tex/rock.jpg");
                 var splat2 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
                 var splat3 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
-                var splat4 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
+                var splat4 = THREE.ImageUtils.loadTexture("tex/grass2rocky.jpg");
 
                 //TextureMap
 				var alphaMap = THREE.ImageUtils.loadTexture("tex/splat2.png");
@@ -604,8 +642,8 @@ var blankmaterial = new THREE.MeshBasicMaterial({color:0x000000});
 					shading:THREE.SmoothShading,
 					//bumpMap: terrainFragShader,
 					//bumpScale:100,
-                    lights: true,
-                    fog: true
+                    //lights: true,
+                    //fog: true
                 });
 				
 function getHeightData(img,scale) {
@@ -667,6 +705,7 @@ img.onload = function () {
 	plane.castShadow=true;
 	plane.receiveShadow=true;
    plane.position.set(0,-1,5120);
+   
    //plane.rotation.x = - 90 * ( Math.PI / 180 );
    var rot = new THREE.Vector3(-1,0,0)
 		plane.quaternion.setFromAxisAngle(rot,(Math.PI/2));
@@ -674,6 +713,7 @@ img.onload = function () {
 		scene.add(rocklayer);
 		rocklayer.position.set(0,-1.001,2560);
 		rocklayer.quaternion.setFromAxisAngle(rot,(Math.PI/2));*/
+
   /* 
            var vertices = [
 plane.geometry.vertices.length
@@ -736,13 +776,13 @@ plane.geometry.vertices.length
 img.src = "tex/heightfield2.png";
 
 //Terrain Detail
-	var rocktex = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
+	var rocktex = new THREE.ImageUtils.loadTexture("tex/rock.jpg")     
 rocktex.wrapS	= THREE.RepeatWrapping;
 	rocktex.wrapT	= THREE.RepeatWrapping;
-	rocktex.repeat.x= 22
-	rocktex.repeat.y= 20
+	rocktex.repeat.x= 4
+	rocktex.repeat.y= 4
 					var loader = new THREE.ObjectLoader();	
-loader.load("models/rockrandom.json", 
+loader.load("models/rockjagged.json", 
     function ( obj ) {
 	obj.material.map = rocktex;
 	//obj.material.emmissive = 0xcccccc;
@@ -753,12 +793,14 @@ loader.load("models/rockrandom.json",
 		obj.geometry.computeVertexNormals();
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   obj.scale.set( 2, 2, 2 );
-	   obj.position.set(50,160,4000);
+	   obj.position.set(2,65,124);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
     }   
 );
- var pinetex = new THREE.ImageUtils.loadTexture( 'tex/bark.jpg' );
+
+
+ var pinetex = new THREE.ImageUtils.loadTexture( 'tex/bark2.jpg' );
 	pinetex.wrapS = pinetex.wrapT = THREE.RepeatWrapping; 
 	pinetex.repeat.set( 10, 10 );    
 					var loader = new THREE.ObjectLoader();	
@@ -795,24 +837,41 @@ loader.load("models/treetoptest.json",
 	 obj.receiveShadow = true;
     }   
 );
+addcity();
+addlandscape();
+
+function addcity(){
+//Gate Into City
+ var gatetex = new THREE.ImageUtils.loadTexture( 'tex/pub.jpg' );
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/pub.json", 
+    function ( obj ) {
+	obj.material.map = gatetex;
+obj.material.emmissive = 0x111111;
+	obj.material.shading = THREE.SmoothShading;
+
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.scale.set( 1, 1, 1 );
+	   obj.position.set(-6,35,-18);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+	 obj.rotation.y = -90  * ( Math.PI / 180 );
+    }   
+);
  //City Floor BOX
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 15, 45 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 15, 45 );
+	floorTexture.repeat.set( 512, 512 );
 var patramaterial = new THREE.MeshPhongMaterial({
         map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
       });
- var halfExtents = new CANNON.Vec3(6,0.002,18);
+ var halfExtents = new CANNON.Vec3(256,0.002,256);
                 var boxShape = new CANNON.Box(halfExtents);
                 var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
 				var x = 0;
                     var y = 65;
-                    var z = 0;
+                    var z = -256;
 				//var boxBody = new CANNON.Body({ mass: 0 });
 				var boxBody = new CANNON.Body({ mass: 0 });
                     boxBody.addShape(boxShape);
@@ -825,153 +884,22 @@ var patramaterial = new THREE.MeshPhongMaterial({
                     boxMesh.receiveShadow = true;
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
-					
-//Sideboxes
- var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 10, 45 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 10, 45 );
-var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
+	 var citywallTexture = new THREE.ImageUtils.loadTexture( 'tex/brick.jpg' );
+	citywallTexture.wrapS = citywallTexture.wrapT = THREE.RepeatWrapping; 
+	citywallTexture.repeat.set( 51.2, 13.0 );
+	var wallmaterial = new THREE.MeshPhongMaterial({
+        map: citywallTexture,
       });
- var halfExtents = new CANNON.Vec3(4,0.002,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = -14;
-                    var y = 65;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
- var halfExtents = new CANNON.Vec3(4,0.002,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 14;
-                    var y = 65;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-
-//Side Connectors
- var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 30, 10 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 30, 10 );		
-var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });	
- var halfExtents = new CANNON.Vec3(12,0.002,4);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 18;
-                    var y = 65;
-                    var z = 22;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-var halfExtents = new CANNON.Vec3(12,0.002,4);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = -18;
-                    var y = 65;
-                    var z = 22;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-					
-					//colour, intensity, radius
-					var balllight2 = new THREE.PointLight(0xFF9500, 1.5, 4 );
-					balllight2.position.set(-8,66,-6);
-					scene.add(balllight2);
-	
-
-//City Floor BOX 2
- var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 15, 45 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 15, 45 );
-var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
- var halfExtents = new CANNON.Vec3(6,0.002,18);
+ var halfExtents = new CANNON.Vec3(256,65,256);
                 var boxShape = new CANNON.Box(halfExtents);
                 var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
 				var x = 0;
-                    var y = 65;
-                    var z = 36;
+                    var y = 0;
+                    var z = -256;
 				//var boxBody = new CANNON.Body({ mass: 0 });
 				var boxBody = new CANNON.Body({ mass: 0 });
                     boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-					
-					//More box
-					var halfExtents = new CANNON.Vec3(6,0.002,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 65;
-                    var z = 72;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
+                    var boxMesh = new THREE.Mesh( boxGeometry, wallmaterial );
                     world.add(boxBody);
                     scene.add(boxMesh);
                     boxBody.position.set(x,y,z);
@@ -981,297 +909,38 @@ var patramaterial = new THREE.MeshPhongMaterial({
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
 
+cityobjects();
+function cityobjects(){
 
-var ferntex = new THREE.ImageUtils.loadTexture("tex/fern.png"); 
-var loader = new THREE.ObjectLoader();	
-loader.load("models/fern.js", 
+buildlibrary();
+
+function buildlibrary(){
+var base = new THREE.ImageUtils.loadTexture("tex/rock.jpg")     
+base.wrapS	= THREE.RepeatWrapping;
+	base.wrapT	= THREE.RepeatWrapping;
+	base.repeat.x= 20
+	base.repeat.y= 20
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/librarybaserock.json", 
     function ( obj ) {
-	obj.material.map = ferntex;
-	obj.material.emmissive = 0xcccccc;
+	obj.material.map = base;
+	obj.material.bumpMap = base;
+	obj.material.bumpScale = 0.25;
+	//obj.material.emmissive = 0xcccccc;
 	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
        scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
+	   obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
 	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.2, 0.2, 0.2 );
-	   obj.position.set(5.7,65,8.1);
+	   var basescale = 2.68125;
+	   obj.scale.set( 2.68125, 2.68125, 2.68125 );
+	   obj.position.set(0,65,-550);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
     }   
 );
-//City Floor BOX Right
- var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 15, 75 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 15, 75 );
-var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
-
-//SidePaths
- var halfExtents = new CANNON.Vec3(6,0.002,30);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 24;
-                    var y = 65;
-                    var z = -12;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-var halfExtents = new CANNON.Vec3(6,0.002,30);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = -24;
-                    var y = 65;
-                    var z = -12;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-										
-					
-//Lower floor
- var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 90, 90 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 90, 90 );
-	var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
- var halfExtents = new CANNON.Vec3(36,0.002,36);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 63;
-                    var z = 18;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-
-					
-					 var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set( 45, 30 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 45, 30 );
-	var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
- var halfExtents = new CANNON.Vec3(18,0.002,12);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 65;
-                    var z = -30;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-
-					
-										
-		//Library
-		     /*
-			 // Cylinder
-			//var halfExtents = new CANNON.Vec3(12,12,12,8);
-            var cylinderShape = new CANNON.Cylinder(12,12,12,8);
-			var cylinderGeometry = new THREE.CylinderGeometry(12,12,12,8);
-			var cylinderMesh= new THREE.Mesh (cylinderGeometry, patramaterial );
-            var cylinderBody = new CANNON.Body({ mass: 0 });
-            cylinderBody.addShape(cylinderShape);
-							var x = 0;
-                    var y = 59;
-                    var z = -28;
-								world.add(cylinderBody);
-			scene.add(cylinderMesh);
-            cylinderBody.position.set(x,y,z);
-			//cylinderBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0,1,0),Math.PI/3);
-			cylinderMesh.position.set(x,y,z);
-			boxes.push(cylinderBody);
-			boxMeshes.push(cylinderMesh);
-			
-			*/
-
-					
- //SideWall
- var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/brickunder.jpg' );
-	fenceTexture.wrapS = fenceTexture.wrapT = THREE.RepeatWrapping; 
-	fenceTexture.repeat.set( 48, 2 );
-var fencematerial = new THREE.MeshPhongMaterial({
-        map: fenceTexture,
-		color: 0x000000,
-		bumpMap: fenceTexture,
-		bumpScale: 0.000,
-		transparent: true
-      });
- var halfExtents = new CANNON.Vec3(6,1,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(12,2,36);
-				var x = 0;
-                    var y = 64;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
- //Side Walkways Undersides
- var halfExtents = new CANNON.Vec3(10,1,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(20,2,36);
-				var x = 20;
-                    var y = 64;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-var halfExtents = new CANNON.Vec3(10,1,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(20,2,36);
-				var x = -20;
-                    var y = 64;
-                    var z = 0;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-//Undercroft
- var halfExtents = new CANNON.Vec3(6,1,18);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(12,2,36);
-				var x = 0;
-                    var y = 64;
-                    var z = 18;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);			
-				
-
-//Backwall
- var fenceTexture = new THREE.ImageUtils.loadTexture( 'tex/brickunder.jpg' );
-	fenceTexture.wrapS = fenceTexture.wrapT = THREE.RepeatWrapping; 
-	fenceTexture.repeat.set( 48, 2 );
-var fencematerial = new THREE.MeshPhongMaterial({
-        map: fenceTexture,
-		bumpMap: fenceTexture,
-		bumpScale: 0.009,
-		transparent: true
-      });
- var halfExtents = new CANNON.Vec3(18,1.001,0.001);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(36,2.001,0);
-				var x = 0;
-                    var y = 64;
-                    var z = -18;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, fencematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);							
-					
- //
-   /* Cylinder shape 2
-            var cylinderShape2 = new CANNON.Cylinder(4,4,4,10);
-            var q = new CANNON.Quaternion();
-            q.setFromAxisAngle(new CANNON.Vec3(0,1,0),Math.PI / 2);
-            cylinderShape2.transformAllPoints(new CANNON.Vec3(),q);
-            var cylinderBody2 = new CANNON.Body({ mass: 1 });
-            cylinderBody2.addShape(cylinderShape2);
-            cylinderBody2.position.set(1,65,7);
-            world.add(cylinderBody2);
-            //demo.addVisual(cylinderBody2);
-		*/	
-			
-
-
-//Library
-
- var libTexture = new THREE.ImageUtils.loadTexture( 'tex/libbricknice.jpg' );
+var libTexture = new THREE.ImageUtils.loadTexture( 'tex/libbricknice.jpg' );
 	libTexture.wrapS = libTexture.wrapT = THREE.RepeatWrapping; 
 	libTexture.repeat.set( 10000, 20000 );
 	 var libbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/libbricknice.jpg' );
@@ -1304,7 +973,7 @@ loader.load("models/libraryext.json",
 	   //obj.scale.set(2.145,2,2.145,2.145);
 	   //var basescale = 2.68125;
 	   obj.scale.set( 5, 5, 5 );
-	   obj.position.set(0,65,-90);
+	   obj.position.set(0,65,-550);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
     }   
@@ -1331,683 +1000,50 @@ loader.load("models/libraryint.json",
 	   obj.scale.set(5, 5, 5);
 	   //var basescale = 2.68125;
 	  // obj.scale.set( 1, 1, 1 );
-	   obj.position.set(0,65,-90);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);	  
-var loader = new THREE.ObjectLoader();	
-				var libfloortex = THREE.ImageUtils.loadTexture( "tex/gratingfloor2.png" );
-				libfloortex.wrapS = libfloortex.wrapT = THREE.RepeatWrapping; 
-	libfloortex.repeat.set( 160, 160 );
-
-var loader = new THREE.ObjectLoader();	
-loader.load("models/libraryfloor.json", 
-    function ( obj ) {
-	obj.material.map = libfloortex;
-	obj.material.shininess = 0.4;
-       //scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-scene.add(obj);
-	   //obj.scale.set( 5, 5, 5 );
-	  obj.position.set(0,65,-90);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-	 		  var verts=[], faces=[];
-        var scale = 1;
-        var rawVerts = obj.geometry.vertices;
-        var rawFaces = obj.geometry.faces;
-        // Get vertices
-        for(var j=0; j<rawVerts.length; j+=1){
-          verts.push(rawVerts[j].x * scale, rawVerts[j].y * scale, rawVerts[j].z * scale);
-        }
-
-        // Get faces
-
-        for(var j=0; j<rawFaces.length; j+=1){
-          faces.push(rawFaces[j].a,rawFaces[j].b,rawFaces[j].c);
-        }
-
-        //console.log({verts:verts, faces:faces});
-//var shape2 = CANNON.Trimesh.createTorus(4, 3.5, 16, 16);
-        var shape = new CANNON.Trimesh(verts,faces);
-        //var trimeshShape = new CANNON.Trimesh(vertices, indices);
-		var trimeshBody = new CANNON.Body({ mass: 0 });
-		trimeshBody.addShape(shape);
-		world.add(trimeshBody);
-		trimeshBody.position.set(0, 65, -90);
-		
-		var rot = new CANNON.Vec3(0,1,0)
-		trimeshBody.quaternion.setFromAxisAngle(rot,(Math.PI/2));
-	/*	var testgeom = new THREE.Geometry();
-
-            var v0 = new CANNON.Vec3();
-            var v1 = new CANNON.Vec3();
-            var v2 = new CANNON.Vec3();
-            for (var i = 0; i < shape.indices.length / 3; i++) {
-                shape.getTriangleVertices(i, v0, v1, v2);
-                testgeom.vertices.push(
-                    new THREE.Vector3(v0.x, v0.y, v0.z),
-                    new THREE.Vector3(v1.x, v1.y, v1.z),
-                    new THREE.Vector3(v2.x, v2.y, v2.z)
-                );
-                var j = testgeom.vertices.length - 3;
-                testgeom.faces.push(new THREE.Face3(j, j+1, j+2));
-            }
-            testgeom.computeBoundingSphere();
-            testgeom.computeFaceNormals();
-            testmesh = new THREE.Mesh(testgeom, material2);
-			scene.add(testmesh);
-			var rot = new CANNON.Vec3(-1,0,0)
-		testmesh.quaternion.setFromAxisAngle(rot,(Math.PI/2));
-		testmesh.position.set(0,65,-90);*/
-/*			  var newobj = obj.clone();
-	  newobj.position.set(0,72,-90);
-	  newobj.rotation.y = 0 * ( Math.PI / 180 );
-	  scene.add(newobj);*/
-    }   
-);
-
-
-//Inner Light
- lightlib = new THREE.SpotLight( 0x8CFAFA,1.5 );
-                 lightlib.position.set( 0, 89, -90 );
-                lightlib.target.position.set( 0, 65, -90 );
-scene.add(lightlib);
-
-//Tank
- 	var tanktex = new THREE.ImageUtils.loadTexture("tex/glass.jpg"); 
-		tanktex.wrapS = tanktex.wrapT = THREE.RepeatWrapping; 
-	tanktex.repeat.set( 80, 160 );
-var geometry = new THREE.CylinderGeometry( 5, 5, 80, 32 );
-var tankMaterial = new THREE.MeshPhongMaterial( {color: 0x000011, map:tanktex, bumpMap: tanktex, bumpScale: 0.05, side: THREE.DoubleSide, opacity: 0.8, transparent: true} );
-var tank = new THREE.Mesh( geometry, tankMaterial );
-scene.add( tank );
-tank.position.set(0,105,-90);
-//tankbase
- 	var tankbasetex = new THREE.ImageUtils.loadTexture("tex/wood.jpg"); 
-		tankbasetex.wrapS = tankbasetex.wrapT = THREE.RepeatWrapping; 
-	tankbasetex.repeat.set( 18, 18 );
-var loader = new THREE.ObjectLoader();	
-loader.load("models/tankbase.json", 
-    function ( obj ) {
-	obj.material.map = tankbasetex;
-	obj.material.bumpMap = tankbasetex;
-	obj.material.bumpScale = 0.05;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-	obj.material.side = THREE.FrontSide;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 5.001, 5.001, 5.001 );
-	   obj.position.set(0,65,-90);
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
+	   obj.position.set(0,65,-550);
 	 obj.castShadow = true;
 	 obj.receiveShadow = true;
     }   
 );	  
 
-//Library Door
- 	var libdoor = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg"); 
-		libdoor.wrapS = libdoor.wrapT = THREE.RepeatWrapping; 
-	libdoor.repeat.set( 8, 8 );
-var loader = new THREE.ObjectLoader();	
-loader.load("models/librarydoor.json", 
-    function ( obj ) {
-	obj.material.map = libdoor;
-	obj.material.bumpMap = libdoor;
-	obj.material.bumpScale = 0.05;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-	obj.material.side = THREE.FrontSide;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 5, 5, 5 );
-	   obj.position.set(0,65,-90);
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);	  
-   
-//DragonWitch
-/*
- 	var dragonwitch = new THREE.ImageUtils.loadTexture("tex/dragonwitchtex.jpg"); 
-var loader = new THREE.ObjectLoader();	
-loader.load("models/dragonwitch.js", 
-    function ( obj ) {
-	obj.material.map = dragonwitch;
-	obj.material.bumpMap = dragonwitch;
-	obj.material.bumpScale = 0.005;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.NoShading;
-	obj.material.side = THREE.DoubleSide;
-       scene.add( obj );
-	   obj.rotation.y = - 90 * ( Math.PI / 180 );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //var basescale = 2.68125;
-	   obj.scale.set( 0.12, 0.12, 0.12 );
-	   obj.position.set(0,65,-8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-var halfExtents = new CANNON.Vec3(0.25,0.5,0.25);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 65.5;
-                    var z = -8;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({mass:0});
-                    boxBody.addShape(boxShape);
-					wireframematerial = new THREE.MeshBasicMaterial({
-    color: 0xFAF205,
-    wireframe: true
-});
-                    var boxMesh = new THREE.Mesh( boxGeometry, wireframematerial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
+}
+						}
+}
+function addlandscape(){
+// objects
+var grassbillboardtex = new THREE.ImageUtils.loadTexture( 'tex/grass.png' );
+			/*	geometry = new THREE.PlaneGeometry( 0.4, 0.4, 1 );
+
+				for ( var i = 0; i < 500; i ++ ) {
+
+					material = new THREE.MeshBasicMaterial( { map: grassbillboardtex, transparent: true, specular: 0xffffff, shading: THREE.FlatShading, side: THREE.DoubleSide} );
+
+					var mesh = new THREE.Mesh( geometry, material );
+					mesh.position.x = Math.floor( Math.random() * 100 - 50 ) * 0.1;
+					mesh.position.y = 35.2;
+					mesh.position.z = Math.floor( Math.random() * 100 - 50 ) * 0.1;
+					mesh.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
+					scene.add( mesh );
 
 
+				}
 */
-/*					
- var libTexture = new THREE.ImageUtils.loadTexture( 'tex/details/ivy.gif' );
-	libTexture.wrapS = libTexture.wrapT = THREE.RepeatWrapping; 
-	libTexture.repeat.set( 8, 1 );
-var libextmaterial = new THREE.MeshLambertMaterial({
-        map: libTexture,
-		transparent:true
-      });		  
-var libextgeometry = new THREE.CylinderGeometry( 30.01, 30.01, 0, 8 );
-var libextcylinder = new THREE.Mesh( libextgeometry, libextmaterial );
-scene.add( libextcylinder );	
-//libextcylinder.position.set(0,285,-90);	
-libextcylinder.position.set(0,380,-90);		
-                    libextcylinder.castShadow = true;
-                    libextcylinder.receiveShadow = true;
-					libextcylinder.rotation.y = - 22.5 * ( Math.PI / 180 );
-*/
-					//Libraryfloorbase
- var libTexture = new THREE.ImageUtils.loadTexture( 'tex/libbase.jpg' );
-	libTexture.wrapS = libTexture.wrapT = THREE.RepeatWrapping; 
-	libTexture.repeat.set( 52, 0.5 );
-	 var libbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/libbase.jpg' );
-	libbumpTexture.wrapS = libbumpTexture.wrapT = THREE.RepeatWrapping; 
-	libbumpTexture.repeat.set( 52, 0.5);
-var libextmaterial = new THREE.MeshPhongMaterial({
-        map: libTexture,
-		bumpMap: libbumpTexture,
-		bumpScale: 0.1,
-      });	
-var libextgeometry = new THREE.CylinderGeometry( 30.5, 30.5, 2, 8 );
-var libextcylinder = new THREE.Mesh( libextgeometry, libextmaterial );
-scene.add( libextcylinder );	
-libextcylinder.position.set(0,64,-90);		
-                    libextcylinder.castShadow = true;
-                    libextcylinder.receiveShadow = true;
-					libextcylinder.rotation.y = - 22.5 * ( Math.PI / 180 );
+grassspriteMaterial = new THREE.SpriteMaterial( { map: grassbillboardtex, blending:THREE.AdditiveBlending} );
+var grassSprite = new THREE.Sprite( grassspriteMaterial );
+					grassSprite.scale.set(0.4, 0.4,0.4);
+						for ( var i = 0; i < 500; i ++ ) {
+
+						
+
+
+				//
+
 					
-var libTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	libTexture.wrapS = libTexture.wrapT = THREE.RepeatWrapping; 
-	libTexture.repeat.set( 76.25, 76.25 );
-	 var libbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	libbumpTexture.wrapS = libbumpTexture.wrapT = THREE.RepeatWrapping; 
-	libbumpTexture.repeat.set( 76.25, 76.25);
-var libextmaterial = new THREE.MeshPhongMaterial({
-        map: libTexture,
-		bumpMap: libbumpTexture,
-		bumpScale: 0.0085,
-      });	
-basegeometry = new THREE.CircleGeometry( 30.5, 8 );
-var libextfloor = new THREE.Mesh( basegeometry, libextmaterial );
-scene.add(libextfloor);
-libextfloor.position.set(0,65.0022,-90);
-libextfloor.rotation.x= - 90 * ( Math.PI / 180 );
-libextfloor.rotation.z= - 22.5 * ( Math.PI / 180 );
-libextfloor.receiveShadow=true;
-libextfloor.castShadow=false;
-
-var libflurTexture = new THREE.ImageUtils.loadTexture( 'tex/library_tiles.jpg' );
-	libflurTexture.wrapS = libflurTexture.wrapT = THREE.RepeatWrapping; 
-	libflurTexture.repeat.set( 50, 50 );
-var libflurmaterial = new THREE.MeshPhongMaterial({
-        map: libflurTexture,
-		bumpMap: libflurTexture,
-		bumpScale: 0.025,
-      });	
-basegeometry = new THREE.CircleGeometry( 25.5, 8 );
-var libintfloor = new THREE.Mesh( basegeometry, libflurmaterial );
-scene.add(libintfloor);
-libintfloor.position.set(0,65.0025,-90);
-libintfloor.rotation.x= - 90 * ( Math.PI / 180 );
-libintfloor.rotation.z= - 22.5 * ( Math.PI / 180 );
-libintfloor.receiveShadow=true;
-libintfloor.castShadow=false;
-
-var halfExtents = new CANNON.Vec3(30,0.002,30);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 64.9999;
-                    var z = -90;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, collisionmat );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = false;
-                    boxMesh.receiveShadow = false;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-	//Library Base
-	//texture repeat was 4 and it was perfect
-	var base = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
-base.wrapS	= THREE.RepeatWrapping;
-	base.wrapT	= THREE.RepeatWrapping;
-	base.repeat.x= 20
-	base.repeat.y= 20
-					var loader = new THREE.ObjectLoader();	
-loader.load("models/librarybaserock.json", 
-    function ( obj ) {
-	obj.material.map = base;
-	obj.material.bumpMap = base;
-	obj.material.bumpScale = 0.25;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   var basescale = 2.68125;
-	   obj.scale.set( 2.68125, 2.68125, 2.68125 );
-	   obj.position.set(0,63,-90);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-loader.load("models/patracliff.json", 
-    function ( obj ) {
-	obj.material.map = base;
-	obj.material.bumpMap = base;
-	obj.material.bumpScale = 0.05;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   var basescale = 2.68125;
-	   obj.scale.set( 2, 2.68125, 2.68125 );
-	   obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(0,65,-42);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
-
-	var archtex = new THREE.ImageUtils.loadTexture("tex/rockbase.jpg")     
-archtex.wrapS	= THREE.RepeatWrapping;
-	archtex.wrapT	= THREE.RepeatWrapping;
-	archtex.repeat.x= 5
-	archtex.repeat.y= 2
-loader.load("models/archbridge.json", 
-    function ( obj ) {
-	obj.material.map = archtex;
-	obj.material.bumpMap = archtex;
-	obj.material.bumpScale = 0.05;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   var basescale = 2.68125;
-	   obj.scale.set( 1, 1.4, 1 );
-	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(0,64.25,-52);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-										 	var libbridgewalltex = new THREE.ImageUtils.loadTexture("tex/marble.jpg")     
-libbridgewalltex.wrapS	= THREE.RepeatWrapping;
-	libbridgewalltex.wrapT	= THREE.RepeatWrapping;
-	libbridgewalltex.repeat.x= 10
-	libbridgewalltex.repeat.y= 10
-loader.load("models/libraryfence.json", 
-    function ( obj ) {
-	obj.material.map = libbridgewalltex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   var basescale = 2.68125;
-	   obj.scale.set( 1, 1, 1 );
-	   obj.rotation.y = 90  * ( Math.PI / 180 );
-	   obj.position.set(3.75,65,-42);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-loader.load("models/libraryfence.json", 
-    function ( obj ) {
-	obj.material.map = libbridgewalltex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   var basescale = 2.68125;
-	   obj.scale.set( 1, 1, 1 );
-	   obj.rotation.y = 90  * ( Math.PI / 180 );
-	   obj.position.set(-3.75,65,-42);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-			 var halfExtents = new CANNON.Vec3(0.2,0.5,10);
-							 var collmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0});
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(0,0,0);
-				var x = 3.75;
-                    var y = 65;
-                    var z = -52;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                   // var boxMesh = new THREE.Mesh( boxGeometry, collmat );
-                    world.add(boxBody);
-                   // scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-								 var halfExtents = new CANNON.Vec3(0.2,0.5,10);
-							 var collmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0});
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(0,0,0);
-				var x = -3.75;
-                    var y = 65;
-                    var z = -52;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                   // var boxMesh = new THREE.Mesh( boxGeometry, collmat );
-                    world.add(boxBody);
-                   // scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
+					}
 					
-//BRIDGE TO EAST CITY
-	var brickbridgetex = new THREE.ImageUtils.loadTexture("tex/brick.jpg")     
-brickbridgetex.wrapS	= THREE.RepeatWrapping;
-	brickbridgetex.wrapT	= THREE.RepeatWrapping;
-	brickbridgetex.repeat.x= 200
-	brickbridgetex.repeat.y= 150
-loader.load("models/largebridge.json", 
-    function ( obj ) {
-	obj.material.map = brickbridgetex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   obj.scale.set( 2, 2, 2 );
-	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(56,63,20);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-loader.load("models/largebridge.json", 
-    function ( obj ) {
-	obj.material.map = brickbridgetex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   obj.scale.set( 2, 2, 2 );
-	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(96,63,20);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-					 var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set(60, 24 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 60, 24 );
-	var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
- var halfExtents = new CANNON.Vec3(20,0.002,8);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 56;
-                    var y = 63;
-                    var z = 20;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
- var halfExtents = new CANNON.Vec3(20,0.002,8);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 96;
-                    var y = 63;
-                    var z = 20;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-					 //side
-					 	var brickbridgewalltex = new THREE.ImageUtils.loadTexture("tex/brick.jpg")     
-brickbridgewalltex.wrapS	= THREE.RepeatWrapping;
-	brickbridgewalltex.wrapT	= THREE.RepeatWrapping;
-	brickbridgewalltex.repeat.x= 40.5
-	brickbridgewalltex.repeat.y= 0.2
-	bridgewallmat = new THREE.MeshLambertMaterial({map:brickbridgewalltex});
-					 var halfExtents = new CANNON.Vec3(40,0.5,0.25);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(0,0,0);
-				var x = 76;
-                    var y = 63;
-                    var z = 27.8;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, bridgewallmat );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-					
-							 var halfExtents = new CANNON.Vec3(40,0.5,0.25);
-							 var collmat=new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0});
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(0,0,0);
-				var x = 76;
-                    var y = 63;
-                    var z = 11.8;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                   // var boxMesh = new THREE.Mesh( boxGeometry, collmat );
-                    world.add(boxBody);
-                   // scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-										 	var brickbridgewalltex = new THREE.ImageUtils.loadTexture("tex/marble.jpg")     
-brickbridgewalltex.wrapS	= THREE.RepeatWrapping;
-	brickbridgewalltex.wrapT	= THREE.RepeatWrapping;
-	brickbridgewalltex.repeat.x= 40
-	brickbridgewalltex.repeat.y= 40
-					loader.load("models/longnicewall.json", 
-    function ( obj ) {
-	obj.material.map = brickbridgewalltex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   obj.scale.set( 0.25,0.25,0.25 );
-	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(36,62.9,12.2501);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-					loader.load("models/longnicewall.json", 
-    function ( obj ) {
-	obj.material.map = brickbridgewalltex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   obj.scale.set( 0.25,0.25,0.25  );
-	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(36,62.9,27.7499);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);
-//Bridge
-					 var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
-	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-	floorTexture.repeat.set(12, 30 );
-	 var floorbumpTexture = new THREE.ImageUtils.loadTexture( 'tex/street3-bump.jpg' );
-	floorbumpTexture.wrapS = floorbumpTexture.wrapT = THREE.RepeatWrapping; 
-	floorbumpTexture.repeat.set( 12, 30 );
-	var patramaterial = new THREE.MeshPhongMaterial({
-        map: floorTexture,
-		bumpMap: floorbumpTexture,
-		bumpScale: 0.0085
-      });
- var halfExtents = new CANNON.Vec3(4,0.002,10);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 65;
-                    var z = -52;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, patramaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);
-//Lower Bridge
-var bridgeTexture = new THREE.ImageUtils.loadTexture( 'tex/libbase.jpg' );
-	bridgeTexture.wrapS = libTexture.wrapT = THREE.RepeatWrapping; 
-	bridgeTexture.repeat.set( 13, 1 );
-var bridgeextmaterial = new THREE.MeshPhongMaterial({
-        map: bridgeTexture,
-		bumpMap: bridgeTexture,
-		bumpScale: 0.1,
-      });	
-var halfExtents = new CANNON.Vec3(4,0.5,10);
-                var boxShape = new CANNON.Box(halfExtents);
-                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
-				var x = 0;
-                    var y = 64.5;
-                    var z = -52;
-				//var boxBody = new CANNON.Body({ mass: 0 });
-				var boxBody = new CANNON.Body({ mass: 0 });
-                    boxBody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh( boxGeometry, bridgeextmaterial );
-                    world.add(boxBody);
-                    scene.add(boxMesh);
-                    boxBody.position.set(x,y,z);
-                    boxMesh.position.set(x,y,z);
-                    boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    boxes.push(boxBody);
-                    boxMeshes.push(boxMesh);	
-
-//Outside City
-loader.load("models/tallrock.json", 
-    function ( obj ) {
-	obj.material.map = brickbridgewalltex;
-	obj.material.shininess = 1;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   obj.scale.set( 1,1,1  );
-	   //obj.rotation.y = -90  * ( Math.PI / 180 );
-	   obj.position.set(0,65,11.8);
-	 obj.castShadow = true;
-	 obj.receiveShadow = false;
-    }   
-);				
+				}
 // SKY?
+
 var path = "tex/sunnysky/";
                 var format = '.jpg';
                 var urls = [
@@ -2033,14 +1069,52 @@ var path = "tex/sunnysky/";
 
                 // The box dimension size doesn't matter that much when the mainCamera is in the centre.  Experiment with the values.
                 skyboxMesh = new THREE.Mesh(new THREE.BoxGeometry(40000, 40000, 40000, 1, 1, 1), skyMaterial);
-                scene.add(skyboxMesh);
+                //scene.add(skyboxMesh);
 				//skyboxMesh.rotation.y = -  * ( Math.PI / 180 );
-//SEA
+				
+
+
+//SUN Position
+	
+var sunspriteMaterial = new THREE.SpriteMaterial( 
+					{ 
+						map: new THREE.ImageUtils.loadTexture( 'tex/glow.png' ), 
+						//useScreenCoordinates: false, alignment: THREE.SpriteAlignment.center,
+						color: 0xaaaa55, transparent: false, blending: THREE.AdditiveBlending
+					});
+					var sunsprite = new THREE.Sprite( sunspriteMaterial );
+					sunsprite.scale.set(400, 400, 50.0);	
+					sunsprite.position.set( -100, 2000, 2000 );
+					scene.add(sunsprite);	
+		
+
+//Any puddles
+//CITY DETAIL
+ var puddlealpha = new THREE.ImageUtils.loadTexture( 'tex/puddletex.jpg' );
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/puddle.json", 
+    function ( obj ) {
+	obj.material.alphaMap = puddlealpha;
+	
+	obj.material.emmissive = 0x111111;
+obj.material.envMap= skyCubemap;
+	obj.material.shading = THREE.SmoothShading;
+	obj.material.opacity = 0.5;
+	obj.material.transparent = true;
+       scene.add( obj );
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.scale.set( 1, 1, 1 );
+	   obj.position.set(5,65.01,0);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
+				//SEA
 var parameters = {
-				width: 20000,
-				height: 20000,
-				widthSegments: 250,
-				heightSegments: 250,
+				width: 10000,
+				height: 10000,
+				widthSegments: 2500,
+				heightSegments: 2500,
 				depth: 1500,
 				param: 4,
 				filterparam: 1
@@ -2079,9 +1153,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 mesh.receiveShadow = true;
                 scene.add( mesh );
 
-				var moveobject= new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), material );
-				scene.add(moveobject);
-				moveobject.position.set(0,65.5,-34);
+				
 	
 //Enemies
    material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true} );
@@ -2151,9 +1223,10 @@ var ballShape2 = new CANNON.Sphere(1);
 			stats.begin();
 			stats.end();
                 requestAnimationFrame( animate );
+				
                 if(controls.enabled){
                     world.step(dt);
-					
+
                     // Update ball positions
                     for(var i=0; i<balls.length; i++){
                         ballMeshes[i].position.copy(balls[i].position);
@@ -2165,18 +1238,19 @@ var ballShape2 = new CANNON.Sphere(1);
                         boxMeshes[i].position.copy(boxes[i].position);
                         boxMeshes[i].quaternion.copy(boxes[i].quaternion);
                     }
+	
                 }
+				controls.enabled==false;
                 controls.update( Date.now() - time );
 				water.material.uniforms.time.value += 0.8 / 60.0;
 				water.render();
+				//sunSphere.update(sunAngle)
 				//Correct player position if underwater
 					if (sphereBody.position.y < 26){
-				sphereBody.position.set(0,66,-44);
+				sphereBody.position.y=26;
 				}	
-				
                 renderer.render( scene, camera );			
                 time = Date.now();
-
             }
 
             var ballShape = new CANNON.Sphere(0.1);
@@ -2193,7 +1267,6 @@ var ballShape2 = new CANNON.Sphere(1);
                 targetVec.y = ray.direction.y;
                 targetVec.z = ray.direction.z;
             }
-
             window.addEventListener("click",function(e){
                 if(controls.enabled==true){
 				if(canshoot=true){
@@ -2202,6 +1275,7 @@ var ballShape2 = new CANNON.Sphere(1);
                     var y = sphereBody.position.y;
                     var z = sphereBody.position.z;
                     var ballBody = new CANNON.Body({ mass: 1 });
+					ballBody.linearDamping = 0;
                     ballBody.addShape(ballShape);
                     var ballMesh = new THREE.Mesh( ballGeometry, spellmaterial );
 					var balllight = new THREE.PointLight(0xFF9500, 1, 10 );
@@ -2212,9 +1286,10 @@ var ballShape2 = new CANNON.Sphere(1);
                     ballMesh.castShadow = false;
                     ballMesh.receiveShadow = false;
                     balls.push(ballBody);
+					
 					var spriteMaterial = new THREE.SpriteMaterial( 
 					{ 
-						map: new THREE.ImageUtils.loadTexture( 'tex/glow.png' ), 
+						map: new THREE.ImageUtils.loadTexture( 'tex/glowspell.png' ), 
 						//useScreenCoordinates: false, alignment: THREE.SpriteAlignment.center,
 						color: 0xcc0000, transparent: false, blending: THREE.AdditiveBlending
 					});
