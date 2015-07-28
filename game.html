@@ -3,7 +3,7 @@
     <head>
 	<link rel="icon" 
       href="images/favicon.ico">
-	 <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+	 <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
         <meta charset="utf-8">
         <title>The Yiye Universe</title>
 		
@@ -24,7 +24,7 @@
                 background-color: #ffffff;
                 margin: 0;
                 overflow: hidden;
-                font-family: 'Oswald', sans-serif;
+                font-family:'Libre Baskerville', serif;
 				font-size: 25px;
             }
 
@@ -103,7 +103,7 @@ div#load_screen{
 	cursor: wait;
 }
 div#load_screen > div#loading{
-font-family: 'Oswald', sans-serif;
+font-family: 'Libre Baskerville', serif;
   width: 50%;
   height: 50%;
   overflow: auto;
@@ -322,21 +322,21 @@ document.body.appendChild( stats.domElement );
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
-                sphereBody.position.set(0,66,141);
-				//sphereBody.position.set(0,86,1000);
-				//sphereBody.position.set(0,195,-40008);
-				//sphereBody.position.set(84,195,3770);
-				//sphereBody.position.set(84,800,3770);
+                //CITY//sphereBody.position.set(0,66,141);
+				//TREE //sphereBody.position.set(0,195,-40008);
+
+				sphereBody.position.set(22,147,2236);
 				
 				//position player in tree
 				//sphereBody.position.set(0,195,-40008);
                 //Actual Sphere Speed
-				sphereBody.linearDamping = 0.9995;
+				sphereBody.linearDamping = 0.999;
 				
 				//Debug speed
 						//sphereBody.linearDamping = 0.2;
                 world.add(sphereBody);
-							
+				
+			
 
    /*             // Create a plane
                 var groundShape = new CANNON.Plane(10,30,10);
@@ -366,12 +366,23 @@ document.body.appendChild( stats.domElement );
 	 obj.receiveShadow = true;
     }   
 );*/
+				var reticleMaterial = new THREE.SpriteMaterial( 
+					{ 
+						map: new THREE.ImageUtils.loadTexture( 'images/reticle.gif' ), 
+						//useScreenCoordinates: false, alignment: THREE.SpriteAlignment.center,
+						color: 0xffffff, transparent: false, blending: THREE.AdditiveBlending
+					});
+					var reticle = new THREE.Sprite( reticleMaterial );
+					reticle.scale.set(0.01, 0.01, 0.01);	
+					reticle.position.set( -0, 0, -0.11 );
+					//camera.add(reticle);	
+					
 				//sphereBody.position.set(0,66,0);
 				var camlight = new THREE.PointLight(0xFFFFFF, 0.5, 1 );
 					camera.add(camlight);
 
                 scene = new THREE.Scene();
-                scene.fog = new THREE.FogExp2( 0xbbbbcc, 0.003 );
+                scene.fog = new THREE.FogExp2( 0xbbbbff, 0.001 );
 
                 var ambient = new THREE.AmbientLight( 0x222222 );
                 scene.add( ambient );
@@ -401,7 +412,7 @@ document.body.appendChild( stats.domElement );
 	//cloudtex.repeat.set( 3, 3 );
 				//var cloudgeometry = new THREE.SphereGeometry( 4500, 6, 6 );
 				var cloudgeometry = new THREE.SphereGeometry( 10000, 6, 6 );
-var cloudmaterial = new THREE.MeshBasicMaterial( {side: THREE.BackSide, map: cloudtex, transparent: true,fog: false,  color: 0xffffff } );
+var cloudmaterial = new THREE.MeshBasicMaterial( {side: THREE.BackSide, map: cloudtex, transparent: true,fog: false,  color: 0xffdede, emissive: 0xffffff } );
 var cloudsphere = new THREE.Mesh( cloudgeometry, cloudmaterial );
 scene.add( cloudsphere );
 cloudsphere.position.set(0,0,2000);
@@ -618,12 +629,32 @@ var blankmaterial = new THREE.MeshBasicMaterial({color:0x000000});
           });
 //scene.add( doorplane );
 //doorplane.position.set(0,200,-4038.78);
+var loader = new THREE.ObjectLoader();	
+loader.load("models/rockarch.js", 
+    function ( obj ) {
+	obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.rotation.y = - 90 * ( Math.PI / 180 );
+	   obj.scale.set( 5, 5, 5 );
+	   obj.position.set(12,146,1446);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);
+
+mainterrain();
+function mainterrain(){
 //TERRAIN HFSHAPE
 //return array with height data from img
-                var splat1 = THREE.ImageUtils.loadTexture("tex/rock.jpg");
-                var splat2 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
-                var splat3 = THREE.ImageUtils.loadTexture("tex/grass2.jpg");
-                var splat4 = THREE.ImageUtils.loadTexture("tex/grass2rocky.jpg");
+                var splat1 = THREE.ImageUtils.loadTexture("tex/grasstex2.jpg");
+                var splat2 = THREE.ImageUtils.loadTexture("tex/grasstex2.jpg");
+                var splat3 = THREE.ImageUtils.loadTexture("tex/grasstex2.jpg");
+                var splat4 = THREE.ImageUtils.loadTexture("tex/rock.jpg");
 
                 //TextureMap
 				var alphaMap = THREE.ImageUtils.loadTexture("tex/splat2.png");
@@ -642,8 +673,8 @@ var blankmaterial = new THREE.MeshBasicMaterial({color:0x000000});
 					shading:THREE.SmoothShading,
 					//bumpMap: terrainFragShader,
 					//bumpScale:100,
-                    //lights: true,
-                    //fog: true
+                    lights: true,
+                    fog: true
                 });
 				
 function getHeightData(img,scale) {
@@ -682,10 +713,11 @@ img.onload = function () {
     var data = getHeightData(img, scale);
  var grasstex = new THREE.ImageUtils.loadTexture( 'tex/grass2.jpg' );
 	grasstex.wrapS = grasstex.wrapT = THREE.RepeatWrapping; 
-	grasstex.repeat.set( 10240, 10240 ); 
+	grasstex.repeat.set( 20480, 20480 ); 
 	var rocklayertex = new THREE.ImageUtils.loadTexture( 'tex/rockbase.jpg' );
 	rocklayertex.wrapS = rocklayertex.wrapT = THREE.RepeatWrapping; 
 	rocklayertex.repeat.set( 10240, 10240 ); 
+	var terrmat = new THREE.MeshPhongMaterial({map:grasstex});
     // plane
 	//var geometry = new THREE.PlaneGeometry(2560,2560,63,63);
     var geometry = new THREE.PlaneGeometry(10240,10240,95,95);
@@ -694,8 +726,8 @@ img.onload = function () {
 	var materialrock = new THREE.MeshPhongMaterial( {  map:rocklayertex, wireframe: false, bumpMap: rocklayertex, bumpScale: 0.20, shininess:0.1 } );
 	//var material2 = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
 	var material2 = new THREE.MeshBasicMaterial( { opacity: 0, transparent: true} );
-    plane = new THREE.Mesh( geometry, terrainMaterial );
-     
+    plane = new THREE.Mesh( geometry, terrainMaterial);
+
     //set height of vertices
     for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
          plane.geometry.vertices[i].z = data[i]*12;
@@ -775,29 +807,7 @@ plane.geometry.vertices.length
 // load img source
 img.src = "tex/heightfield2.png";
 
-//Terrain Detail
-	var rocktex = new THREE.ImageUtils.loadTexture("tex/rock.jpg")     
-rocktex.wrapS	= THREE.RepeatWrapping;
-	rocktex.wrapT	= THREE.RepeatWrapping;
-	rocktex.repeat.x= 4
-	rocktex.repeat.y= 4
-					var loader = new THREE.ObjectLoader();	
-loader.load("models/rockjagged.json", 
-    function ( obj ) {
-	obj.material.map = rocktex;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	  obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.scale.set( 2, 2, 2 );
-	   obj.position.set(2,65,124);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
+}
 
 
  var pinetex = new THREE.ImageUtils.loadTexture( 'tex/bark2.jpg' );
@@ -1024,7 +1034,12 @@ var grassbillboardtex = new THREE.ImageUtils.loadTexture( 'tex/grass.png' );
 					mesh.position.z = Math.floor( Math.random() * 100 - 50 ) * 0.1;
 					mesh.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
 					scene.add( mesh );
-
+var mesh = new THREE.Mesh( geometry, material );
+					obj.position.x = Math.floor( Math.random() * 100 - 50 ) * 0.1;
+					obj.position.y = 65;
+					obj.position.z = Math.floor( Math.random() * 100 - 50 ) * 0.1;
+					obj.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
+					scene.add( obj );
 
 				}
 */
@@ -1041,6 +1056,58 @@ var grassSprite = new THREE.Sprite( grassspriteMaterial );
 					
 					}
 					
+				
+//Terrain Detail
+	var rocktex = new THREE.ImageUtils.loadTexture("tex/bark2.jpg")     
+rocktex.wrapS	= THREE.RepeatWrapping;
+	rocktex.wrapT	= THREE.RepeatWrapping;
+	rocktex.repeat.x= 4
+	rocktex.repeat.y= 4
+	/*
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/detailedtree.json", 
+    function ( obj ) {
+	obj.material.map = rocktex;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       scene.add( obj );
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   obj.scale.set( 0.3, 0.3, 0.3 );
+	   obj.position.set(2,65,124);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);		
+*/
+for ( var i = 0; i < 50; i ++ ) {
+					var loader = new THREE.ObjectLoader();	
+loader.load("models/detailedtree.json", 
+    function ( obj ) {
+	obj.material.map = rocktex;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 0.4;
+	obj.material.shading = THREE.SmoothShading;
+       
+	  obj.geometry.mergeVertices();
+		obj.geometry.computeVertexNormals();
+	   //obj.scale.set(2.145,2,2.145,2.145);
+	   //obj.scale.set( 0.3, 0.3, 0.3 );
+	   obj.position.set(0,65,124);
+obj.position.x = Math.floor( Math.random() * 40 - 40 ) * 1;
+					obj.position.y = 65;
+					obj.position.z = Math.floor( Math.random() * 144 - 104 ) * 1 +124;
+					obj.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
+					var objscale=Math.floor( Math.random() * 2 - 1 ) * 0.3;
+					obj.scale.set(objscale);
+					scene.add( obj );
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);	
+}		
 				}
 // SKY?
 
@@ -1083,10 +1150,11 @@ var sunspriteMaterial = new THREE.SpriteMaterial(
 						color: 0xaaaa55, transparent: false, blending: THREE.AdditiveBlending
 					});
 					var sunsprite = new THREE.Sprite( sunspriteMaterial );
-					sunsprite.scale.set(400, 400, 50.0);	
-					sunsprite.position.set( -100, 2000, 2000 );
+					sunsprite.scale.set(1000, 1000, 50.0);	
+					sunsprite.position.set( -100, 4000, 6000 );
 					scene.add(sunsprite);	
-		
+	
+			
 
 //Any puddles
 //CITY DETAIL
@@ -1109,6 +1177,7 @@ obj.material.envMap= skyCubemap;
 	 obj.receiveShadow = true;
     }   
 );
+function sea(){
 				//SEA
 var parameters = {
 				width: 10000,
@@ -1152,7 +1221,7 @@ waterNormals = new THREE.ImageUtils.loadTexture( 'tex/waternormals.jpg' );
                 mesh.castShadow = false;
                 mesh.receiveShadow = true;
                 scene.add( mesh );
-
+}
 				
 	
 //Enemies
@@ -1242,8 +1311,8 @@ var ballShape2 = new CANNON.Sphere(1);
                 }
 				controls.enabled==false;
                 controls.update( Date.now() - time );
-				water.material.uniforms.time.value += 0.8 / 60.0;
-				water.render();
+				//water.material.uniforms.time.value += 0.8 / 60.0;
+				//water.render();
 				//sunSphere.update(sunAngle)
 				//Correct player position if underwater
 					if (sphereBody.position.y < 26){
@@ -1274,7 +1343,7 @@ var ballShape2 = new CANNON.Sphere(1);
                     var x = sphereBody.position.x;
                     var y = sphereBody.position.y;
                     var z = sphereBody.position.z;
-                    var ballBody = new CANNON.Body({ mass: 1 });
+                    var ballBody = new CANNON.Body({ mass: 0.00001 });
 					ballBody.linearDamping = 0;
                     ballBody.addShape(ballShape);
                     var ballMesh = new THREE.Mesh( ballGeometry, spellmaterial );
