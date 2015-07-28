@@ -15,6 +15,8 @@
 <script src='threex.videograbbing.js'></script> 
 <script src='threex.jsarucomarker.js'></script>
 
+<script src="StereoEffect.js"></script>
+
 <body style='margin: 0px; overflow: hidden;'>
 
 <div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px; text-align:center;'>
@@ -150,7 +152,10 @@
 	});
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
-
+var effect;
+	effect = new THREE.StereoEffect( renderer );
+				effect.eyeSeparation = 10;
+				effect.setSize( window.innerWidth, window.innerHeight );
 	// array of functions for the rendering loop
 	var onRenderFcts = [];
 
@@ -202,6 +207,7 @@
 		renderer.setSize( window.innerWidth, window.innerHeight )
 		camera.aspect	= window.innerWidth / window.innerHeight
 		camera.updateProjectionMatrix()
+		effect.setSize( window.innerWidth, window.innerHeight );
 	}, false)
 
 	
@@ -212,6 +218,7 @@
 			renderer.render( scene, camera );
 		}
 		renderStats.end();
+		effect.render( scene, camera );
 	})
 
 	// run the rendering loop
