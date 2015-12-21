@@ -3,7 +3,7 @@
     <head>
 	<link rel="icon" 
       href="images/favicon.ico">
-	 <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
+	  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
         <meta charset="utf-8">
         <title>The Yiye Universe</title>
 		
@@ -24,7 +24,7 @@
                 background-color: #ffffff;
                 margin: 0;
                 overflow: hidden;
-                font-family:'Libre Baskerville', serif;
+                font-family: 'Montserrat', sans-serif;
 				font-size: 25px;
             }
 
@@ -148,13 +148,9 @@ window.addEventListener("load", function(){
         <script src="build/cannon.js"></script>
         <script src="js/PointerLockControls.js"></script>
 		<script src="js/stats.min.js"></script>
-		<script src="js/Mirror.js"></script>
-		<script src="js/WaterShader.js"></script>
 		<script src="js/TerrainShaders.js"></script>
-		<script src="js/ShaderToon.js"></script>
         <script src="js/TerrainMaterial.js"></script>
 		<script src='js/threex.keyboardstate.js'></script>
-		<script src='js/threex.daynight.js'></script>
 		 
         <div id="blocker">
 
@@ -163,13 +159,11 @@ window.addEventListener("load", function(){
 			<div id="txt"></div>
 			<br>
 			<center>
-			<img src="images/logolarge.png" width="100%" height="auto"><br>
+			<span style="font-size:10vw">YIYE</span> <br/>
                 <span style="font-size:40px">CLICK TO PLAY</span>
-                <br />
-				Last Update: 19/04/2015
 				<br />
                 (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK = Shoot) <br />
-			<i>	Pre-ALPHA </i> <br />
+			Click and hold to use the grapple. Release the mouse button to let go.
 			This game uses <a href="http://threejs.org/"> three.js </a> and <a href="http://cannonjs.org/"> cannon.js </a>
 			<br />
 			<br />
@@ -305,7 +299,7 @@ world.allowSleep = true;
                 else
                     world.solver = solver;
 
-                world.gravity.set(0,-20,0);
+                world.gravity.set(0,-30,0);
                 world.broadphase = new CANNON.NaiveBroadphase();
 
                 // Create a slippery material (friction coefficient = 0.0)
@@ -313,7 +307,7 @@ world.allowSleep = true;
                 var physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial,
                                                                         physicsMaterial,
                                                                         0.0, // friction coefficient
-                                                                        0.03  // restitution
+                                                                        0.02  // restitution
                                                                         );
                 // We must add the contact materials to the world
                 world.addContactMaterial(physicsContactMaterial);
@@ -324,8 +318,9 @@ world.allowSleep = true;
                 sphereShape = new CANNON.Sphere(radius);
                 sphereBody = new CANNON.Body({ mass: mass });
                 sphereBody.addShape(sphereShape);
-                //CITY
-				sphereBody.position.set(0,67,-2);
+                
+				//CITY
+				sphereBody.position.set(0,68,-4);
 
                 //Actual Sphere Speed
 				sphereBody.linearDamping = 0.9;
@@ -460,7 +455,7 @@ scene.add( menucylinder );
 
 //grapple points
 var materialtest = new THREE.MeshLambertMaterial({color: 0x333333, wireframe: false});
-var halfExtents = new CANNON.Vec3(5,1,1);
+var halfExtents = new CANNON.Vec3(10,1,1);
                 var boxShape = new CANNON.Box(halfExtents);
                 var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
 				var x = 0;
@@ -494,6 +489,7 @@ var halfExtents = new CANNON.Vec3(5,1,1);
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
 					
+					var y = 77;
 					var z = -40;
 				//var boxBody = new CANNON.Body({ mass: 0 });
 				var boxBody = new CANNON.Body({ mass: 0 });
@@ -507,8 +503,62 @@ var halfExtents = new CANNON.Vec3(5,1,1);
                     boxMesh.receiveShadow = true;
                     boxes.push(boxBody);
                     boxMeshes.push(boxMesh);
+
+var halfExtents = new CANNON.Vec3(10,20,20);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = 24;
+                    var y = 74;
+                    var z = -50;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, materialtest );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);		
+var halfExtents = new CANNON.Vec3(10,20,20);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = -24;
+                    var y = 74;
+                    var z = -50;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, materialtest );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);						
 					
-					
+					var halfExtents = new CANNON.Vec3(10,10,20);
+                var boxShape = new CANNON.Box(halfExtents);
+                var boxGeometry = new THREE.BoxGeometry(halfExtents.x*2,halfExtents.y*2,halfExtents.z*2);
+				var x = -24;
+                    var y = 67;
+                    var z = -90;
+				//var boxBody = new CANNON.Body({ mass: 0 });
+				var boxBody = new CANNON.Body({ mass: 0 });
+                    boxBody.addShape(boxShape);
+                    var boxMesh = new THREE.Mesh( boxGeometry, materialtest );
+                    world.add(boxBody);
+                    scene.add(boxMesh);
+                    boxBody.position.set(x,y,z);
+                    boxMesh.position.set(x,y,z);
+                    boxMesh.castShadow = true;
+                    boxMesh.receiveShadow = true;
+                    boxes.push(boxBody);
+                    boxMeshes.push(boxMesh);	
 var rocktex = THREE.ImageUtils.loadTexture("tex/rock.jpg");
 	rocktex.wrapS = rocktex.wrapT = THREE.RepeatWrapping; 
 	rocktex.repeat.set( 8, 8 ); 
@@ -534,65 +584,11 @@ loader.load("models/rockarch.js",
 
 
 
- var pinetex = new THREE.ImageUtils.loadTexture( 'tex/bark2.jpg' );
-	pinetex.wrapS = pinetex.wrapT = THREE.RepeatWrapping; 
-	pinetex.repeat.set( 10, 10 );    
-					var loader = new THREE.ObjectLoader();	
-loader.load("models/treenew.json", 
-    function ( obj ) {
-	obj.material.map = pinetex;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	  obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.scale.set( 0.6, 0.6, 0.6 );
-	   obj.position.set(36,220,5230);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
- var treetoptex = new THREE.ImageUtils.loadTexture( 'tex/treetex.png' );
-loader.load("models/treetoptest.json", 
-    function ( obj ) {
-	obj.material.map = treetoptex;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	  obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.scale.set( 0.6, 0.6, 0.6 );
-	   obj.position.set(36,220,5230);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);
+
 addcity();
 addlandscape();
 
 function addcity(){
-//Gate Into City
- var gatetex = new THREE.ImageUtils.loadTexture( 'tex/pub.jpg' );
-					var loader = new THREE.ObjectLoader();	
-loader.load("models/pub.json", 
-    function ( obj ) {
-	obj.material.map = gatetex;
-obj.material.emmissive = 0x111111;
-	obj.material.shading = THREE.SmoothShading;
-
-       scene.add( obj );
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.scale.set( 1, 1, 1 );
-	   obj.position.set(-6,35,-18);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-	 obj.rotation.y = -90  * ( Math.PI / 180 );
-    }   
-);
  //City Floor BOX
  var floorTexture = new THREE.ImageUtils.loadTexture( 'tex/street2.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
@@ -740,98 +736,30 @@ loader.load("models/libraryint.json",
     }   
 );	  
 
+
+loader.load("models/librarydoor.json", 
+    function ( obj ) {
+	obj.material.map = libint;
+	//obj.material.emmissive = 0xcccccc;
+	obj.material.shininess = 1.4;
+	obj.material.shading = THREE.SmoothShading;
+	obj.material.side = THREE.FrontSide;
+       scene.add( obj );
+	   obj.rotation.y = -90 * ( Math.PI / 180 );
+	   obj.scale.set(5, 5, 5);
+	   //var basescale = 2.68125;
+	  // obj.scale.set( 1, 1, 1 );
+	   obj.position.set(0,65,-550);
+	 obj.castShadow = true;
+	 obj.receiveShadow = true;
+    }   
+);	  
+
 }
 						}
 }
 function addlandscape(){
-// objects
-var grassbillboardtex = new THREE.ImageUtils.loadTexture( 'tex/grass.png' );
-			/*	geometry = new THREE.PlaneGeometry( 0.4, 0.4, 1 );
-
-				for ( var i = 0; i < 500; i ++ ) {
-
-					material = new THREE.MeshBasicMaterial( { map: grassbillboardtex, transparent: true, specular: 0xffffff, shading: THREE.FlatShading, side: THREE.DoubleSide} );
-
-					var mesh = new THREE.Mesh( geometry, material );
-					mesh.position.x = Math.floor( Math.random() * 100 - 50 ) * 0.1;
-					mesh.position.y = 35.2;
-					mesh.position.z = Math.floor( Math.random() * 100 - 50 ) * 0.1;
-					mesh.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
-					scene.add( mesh );
-var mesh = new THREE.Mesh( geometry, material );
-					obj.position.x = Math.floor( Math.random() * 100 - 50 ) * 0.1;
-					obj.position.y = 65;
-					obj.position.z = Math.floor( Math.random() * 100 - 50 ) * 0.1;
-					obj.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
-					scene.add( obj );
-
-				}
-*/
-grassspriteMaterial = new THREE.SpriteMaterial( { map: grassbillboardtex, blending:THREE.AdditiveBlending} );
-var grassSprite = new THREE.Sprite( grassspriteMaterial );
-					grassSprite.scale.set(0.4, 0.4,0.4);
-						for ( var i = 0; i < 500; i ++ ) {
-
-						
-
-
-				//
-
-					
-					}
-					
-				
-//Terrain Detail
-	var rocktex = new THREE.ImageUtils.loadTexture("tex/bark2.jpg")     
-rocktex.wrapS	= THREE.RepeatWrapping;
-	rocktex.wrapT	= THREE.RepeatWrapping;
-	rocktex.repeat.x= 4
-	rocktex.repeat.y= 4
-	/*
-					var loader = new THREE.ObjectLoader();	
-loader.load("models/detailedtree.json", 
-    function ( obj ) {
-	obj.material.map = rocktex;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       scene.add( obj );
-	  obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   obj.scale.set( 0.3, 0.3, 0.3 );
-	   obj.position.set(2,65,124);
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);		
-*/
-for ( var i = 0; i < 50; i ++ ) {
-					var loader = new THREE.ObjectLoader();	
-loader.load("models/detailedtree.json", 
-    function ( obj ) {
-	obj.material.map = rocktex;
-	//obj.material.emmissive = 0xcccccc;
-	obj.material.shininess = 0.4;
-	obj.material.shading = THREE.SmoothShading;
-       
-	  obj.geometry.mergeVertices();
-		obj.geometry.computeVertexNormals();
-	   //obj.scale.set(2.145,2,2.145,2.145);
-	   //obj.scale.set( 0.3, 0.3, 0.3 );
-	   obj.position.set(0,65,124);
-obj.position.x = Math.floor( Math.random() * 40 - 40 ) * 1;
-					obj.position.y = 65;
-					obj.position.z = Math.floor( Math.random() * 144 - 104 ) * 1 +124;
-					obj.rotation.y = Math.floor( Math.random() * 360 - 1 ) * 1;
-					var objscale=Math.floor( Math.random() * 2 - 1 ) * 0.3;
-					obj.scale.set(objscale);
-					scene.add( obj );
-	 obj.castShadow = true;
-	 obj.receiveShadow = true;
-    }   
-);	
-}		
+//cliff
 				}
 // SKY?
 
@@ -967,42 +895,6 @@ var ballShape2 = new CANNON.Sphere(1);
 					
 					enemyMesh.position.set(enemyBody.position);
 				
-				// Add linked boxes
-			/*	
-                var size = 0.5;
-                var he = new CANNON.Vec3(size,size,size*0.1);
-                var boxShape = new CANNON.Box(he);
-                var mass = 0;
-                var space = 0.1 * size;
-                var N = 5, last;
-                var boxGeometry = new THREE.BoxGeometry(he.x*2,he.y*2,he.z*2);
-                for(var i=0; i<N; i++){
-                    var boxbody = new CANNON.Body({ mass: mass });
-                    boxbody.addShape(boxShape);
-                    var boxMesh = new THREE.Mesh(boxGeometry, material);
-                    boxbody.position.set(5,(N-i)*(size*2+2*space) + size*2+space,0);
-                    boxbody.linearDamping = 0.01;
-                    boxbody.angularDamping = 0.01;
-                    // boxMesh.castShadow = true;
-                    boxMesh.receiveShadow = true;
-                    world.add(boxbody);
-                    scene.add(boxMesh);
-                    boxes.push(boxbody);
-                    boxMeshes.push(boxMesh);
-
-
-                    if(i!=0){
-                        // Connect this body to the last one
-                        var c1 = new CANNON.PointToPointConstraint(boxbody,new CANNON.Vec3(-size,size+space,0),last,new CANNON.Vec3(-size,-size-space,0));
-                        var c2 = new CANNON.PointToPointConstraint(boxbody,new CANNON.Vec3(size,size+space,0),last,new CANNON.Vec3(size,-size-space,0));
-                        world.addConstraint(c1);
-                        world.addConstraint(c2);
-                    } else {
-                        mass=0.3;
-                    }
-                    last = boxbody;
-                }
-				*/
             }
 
             function onWindowResize() {
@@ -1043,10 +935,10 @@ var ballShape2 = new CANNON.Sphere(1);
                 time = Date.now();
             }
 
-            var ballShape = new CANNON.Sphere(0.1);
-            var ballGeometry = new THREE.SphereGeometry(ballShape.radius/2, 24, 24);
+            var ballShape = new CANNON.Sphere(0.4);
+            var ballGeometry = new THREE.SphereGeometry(ballShape.radius/4, 24, 24);
             var shootDirection = new THREE.Vector3();
-            var shootVelo = 60;
+            var shootVelo = 100;
             var projector = new THREE.Projector();
             function getShootDir(targetVec){
                 var vector = targetVec;
@@ -1080,6 +972,8 @@ var ballShape2 = new CANNON.Sphere(1);
                     ballMesh.castShadow = false;
                     ballMesh.receiveShadow = false;
                     balls.push(ballBody);
+
+
 		window.addEventListener("mouseup",function(e){
 scene.remove(ballMesh);
 world.remove(ballBody);
@@ -1107,12 +1001,13 @@ world.remove(ballBody);
               console.log("Grapple successful.");
              console.log("Collided with:",e.body);
 			   var c = new CANNON.DistanceConstraint(sphereBody, ballBody);
-                  world.addConstraint(c);      
+			   world.addConstraint(c); 
+  
 			 //scene.remove(ballMesh);
 			 //world.remove(ballBody);	 
 			 ballBody.sleep();
 		window.addEventListener("mouseup",function(e){
-world.removeConstraint(c);
+world.removeConstraint(c);   
 scene.remove(ballMesh);
 world.remove(ballBody);
 			 
